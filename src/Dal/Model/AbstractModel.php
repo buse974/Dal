@@ -101,6 +101,8 @@ abstract class AbstractModel implements JsonSerializable, ServiceLocatorAwareInt
                 }
             } elseif (is_object($value)) {
                 unset($vars[$key]);
+            } elseif ( is_bool($value)) {
+                $vars[$key] = (int) $value;
             }
         }
 
@@ -117,6 +119,8 @@ abstract class AbstractModel implements JsonSerializable, ServiceLocatorAwareInt
                 unset($vars[$key]);
             } elseif ( is_object($value) && $value instanceof IsNull ) {
                 $vars[$key] = null;
+            } elseif ( is_bool($value)) {
+                $vars[$key] = (int) $value;
             }
         }
 
@@ -127,7 +131,7 @@ abstract class AbstractModel implements JsonSerializable, ServiceLocatorAwareInt
     {
         return (null !== $this->parent_model) ? $this->parent_model->allParent() . '_' . $this->prefix : $this->prefix;
     }
-
+    
     public function toArrayKeys()
     {
         $array = get_object_vars($this);
@@ -160,11 +164,13 @@ abstract class AbstractModel implements JsonSerializable, ServiceLocatorAwareInt
 
     protected function isRepeatRelational()
     {
+    	$is_repeat = false;
+    	
         if (array_count_values($this->getParentArray())[$this->prefix] > 1) {
-            return true;
+            $is_repeat = true;
         }
 
-        return false;
+        return $is_repeat;
     }
     /**
      * @see \Zend\ServiceManager\ServiceLocatorAwareInterface::setServiceLocator()

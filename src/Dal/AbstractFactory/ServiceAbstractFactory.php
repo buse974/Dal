@@ -6,8 +6,6 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 
 class ServiceAbstractFactory extends AbstractFactory
 {
-    public $config = array();
-
     public function canCreateServiceWithName(ServiceLocatorInterface $serviceLocator, $name, $requestedName)
     {
         return (strpos($requestedName, 'dal_service_')===0);
@@ -16,7 +14,7 @@ class ServiceAbstractFactory extends AbstractFactory
     public function createServiceWithName(ServiceLocatorInterface $serviceLocator, $name, $requestedName)
     {
         $name = substr($requestedName, 12);
-        $class = 'Dal\\Service\\' . $this->toCamelCase($name);
+        $class = $this->getConfig($serviceLocator)['namespace']['service'] . '\\' . $this->toCamelCase($name);
 
         if (class_exists($class)) {
             $obj = new $class('dal_mapper_' . $name);

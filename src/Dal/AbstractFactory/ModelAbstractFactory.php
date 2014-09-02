@@ -31,12 +31,12 @@ class ModelAbstractFactory extends AbstractFactory
     {
         $name_table = $this->toCamelCase(substr($requestedName, 10));
 
-        if (class_exists('Dal\\Model\\' . $name_table . '\\Relational')) {
-            $class = 'Dal\\Model\\' . $name_table . '\\Relational';
-        } elseif (class_exists('Dal\\Model\\' . $name_table)) {
-            $class = 'Dal\\Model\\' . $name_table;
+        if (class_exists($this->getConfig($serviceLocator)['namespace']['model'] . '\\' . $name_table . '\\Relational')) {
+            $class = $this->getConfig($serviceLocator)['namespace']['model'] . '\\' . $name_table . '\\Relational';
+        } elseif (class_exists($this->getConfig($serviceLocator)['namespace']['model'] . '\\' . $name_table)) {
+            $class = $this->getConfig($serviceLocator)['namespace']['model'] . '\\' . $name_table;
         } else {
-            echo "Not exist : Dal\\Model\\" . $name_table . "\n";
+            echo "Not exist : " . $this->getConfig($serviceLocator)['namespace']['model'] . "\\" . $name_table . "\n";
         }
 
         return new $class;

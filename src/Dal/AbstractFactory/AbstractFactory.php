@@ -11,14 +11,19 @@ abstract class AbstractFactory implements AbstractFactoryInterface
     private $alpha = array('A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z');
 
     protected $config_name = 'dal-conf';
+    protected $config;
 
     public function getConfig(ServiceLocatorInterface $serviceLocator)
     {
-        if (!$serviceLocator->has('Config')) {
-            return false;
-        }
-
-        return $this->config = $serviceLocator->get('Config')[$this->config_name];
+    	if(null === $this->config) { 
+	        if (!$serviceLocator->has('Config')) {
+	            return false;
+	        }
+	
+	        $this->config = $serviceLocator->get('Config')[$this->config_name];
+    	}
+    	
+    	return $this->config;
     }
 
     public function toCamelCase($name)
