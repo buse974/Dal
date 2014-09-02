@@ -271,7 +271,7 @@ abstract class AbstractMapper implements ServiceLocatorAwareInterface
                     $this->tableGateway->getResultSetPrototype()
             ));
             $this->paginator->setItemCountPerPage($options['n']);
-            $ret = ($this->paginator->count() < $options['p']) ? (new \Dal\Db\ResultSet\ResultSet)->initialize(array()) : $this->paginator->getItemsByPage($options['p']);
+            $ret = ($this->paginator->count() < $options['p']) ? (new \Dal\Db\ResultSet\ResultSet())->initialize(array()) : $this->paginator->getItemsByPage($options['p']);
 
         } elseif (is_array($select)) {
             $this->paginator = $select;

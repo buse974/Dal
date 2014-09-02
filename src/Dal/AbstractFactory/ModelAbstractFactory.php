@@ -39,6 +39,6 @@ class ModelAbstractFactory extends AbstractFactory
             echo "Not exist : " . $this->getConfig($serviceLocator)['namespace']['model'] . "\\" . $name_table . "\n";
         }
 
-        return new $class;
+        return new $class();
     }
 }

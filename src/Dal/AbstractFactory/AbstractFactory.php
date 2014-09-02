@@ -15,15 +15,15 @@ abstract class AbstractFactory implements AbstractFactoryInterface
 
     public function getConfig(ServiceLocatorInterface $serviceLocator)
     {
-    	if(null === $this->config) { 
-	        if (!$serviceLocator->has('Config')) {
-	            return false;
-	        }
-	
-	        $this->config = $serviceLocator->get('Config')[$this->config_name];
-    	}
-    	
-    	return $this->config;
+        if (null === $this->config) {
+            if (!$serviceLocator->has('Config')) {
+                return false;
+            }
+
+            $this->config = $serviceLocator->get('Config')[$this->config_name];
+        }
+
+        return $this->config;
     }
 
     public function toCamelCase($name)

@@ -131,7 +131,7 @@ abstract class AbstractModel implements JsonSerializable, ServiceLocatorAwareInt
     {
         return (null !== $this->parent_model) ? $this->parent_model->allParent() . '_' . $this->prefix : $this->prefix;
     }
-    
+
     public function toArrayKeys()
     {
         $array = get_object_vars($this);
@@ -164,8 +164,8 @@ abstract class AbstractModel implements JsonSerializable, ServiceLocatorAwareInt
 
     protected function isRepeatRelational()
     {
-    	$is_repeat = false;
-    	
+        $is_repeat = false;
+
         if (array_count_values($this->getParentArray())[$this->prefix] > 1) {
             $is_repeat = true;
         }

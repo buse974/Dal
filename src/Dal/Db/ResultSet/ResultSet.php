@@ -113,7 +113,7 @@ class ResultSet extends BaseResultSet implements JsonSerializable
                 $mod =array();
                 // si on a qu'un seule element on met dans un tableau les groups demandé
                 foreach (current($tt) as $key => $val) {
-                    $mod[$key] = (in_array ($key , $indice))? $val :  $mod[$key] = array($val);
+                    $mod[$key] = (in_array ($key , $indice)) ? $val :  $mod[$key] = array($val);
                 }
             } else {
                 $mod = $this->group($tt,$indice);
@@ -135,7 +135,7 @@ class ResultSet extends BaseResultSet implements JsonSerializable
 
             foreach ($tabr as $key => $tt) {
                 $tt = array_map('unserialize',$tabr[$key]);
-                $tabr[$key] = (in_array ($key , $indice))?  $tt[0] : $tt;
+                $tabr[$key] = (in_array ($key , $indice)) ?  $tt[0] : $tt;
             }
 
             return $tabr;
