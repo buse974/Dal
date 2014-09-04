@@ -208,7 +208,7 @@ abstract class AbstractMapper implements ServiceLocatorAwareInterface
      */
     public function delete(AbstractModel $model)
     {
-        $array = $model->toArray();
+        $array = $model->toArrayCurrent();
 
         if (empty($array)) {
             throw new \Exception('Error : delete used an empty model');
