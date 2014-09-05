@@ -23,17 +23,6 @@ class ResultSet extends BaseResultSet implements JsonSerializable
        return $this->toArray();
     }
 
-    public function toArray()
-    {
-        $ret = array();
-
-        if ($this->count()>0) {
-            $ret = parent::toArray();
-        }
-
-        return $ret;
-    }
-
     public function toArrayParent($chaine_parent = 'parent_id', $chaine_id = 'id')
     {
         $array=$this->toArray();
@@ -55,29 +44,70 @@ class ResultSet extends BaseResultSet implements JsonSerializable
 
         return $final;
     }
-
+    
     /**
      * Cast result set to array of arrays
      *
      * @return array
      * @throws Exception\RuntimeException if any row is not castable to an array
      */
-    public function toArrayCurrent()
+    public function toArray($indice = null)
     {
-        $return = array();
-        foreach ($this as $row) {
-            if (is_array($row)) {
-                $return[] = $row;
-            } elseif (method_exists($row, 'toArrayCurrent')) {
-                $return[] = $row->toArrayCurrent();
-            } else {
-                throw new Exception\RuntimeException(
-                        'Rows as part of this DataSource, with type ' . gettype($row) . ' cannot be cast to an array Current'
-                );
-            }
-        }
-
-        return $return;
+    	$return = array();
+    	foreach ($this as $row) {
+    		if (is_array($row)) {
+    			if($indice!==null && isset($row[$indice])) {
+    				$return[$row[$indice]] = $row;
+    			} else {
+    				$return[] = $row;
+    			}
+    		} elseif (method_exists($row, 'toArray')) {
+    			if($indice!==null && method_exists($row, 'get' . ucfirst($indice))) {
+    				$return[$row->{'get' . ucfirst($indice)}()] = $row->toArray();
+    			} else {
+    				$return[] = $row->toArray();
+    			}
+    		} elseif (method_exists($row, 'getArrayCopy')) {
+    			if($indice!==null && method_exists($row, 'get' . ucfirst($indice))) {
+    				$return[$row->{'get' . ucfirst($indice)}()] = $row->getArrayCopy();
+    			} else {
+    				$return[] = $row->getArrayCopy();
+    			}
+    		}
+    	}
+    	return $return;
+    }
+    
+    /**
+     * Cast result set to array of arrays
+     *
+     * @return array
+     * @throws Exception\RuntimeException if any row is not castable to an array
+     */
+    public function toArrayCurrent($indice = null)
+    {
+    	$return = array();
+    	foreach ($this as $row) {
+    		if (is_array($row)) {
+    			if($indice!==null && isset($row[$indice])) {
+    				$return[$row[$indice]] = $row;
+    			} else {
+    				$return[] = $row;
+    			}
+    		} elseif (method_exists($row, 'toArrayCurrent')) {
+    			if($indice!==null && method_exists($row, 'get' . ucfirst($indice))) {
+    				$return[$row->{'get' . ucfirst($indice)}()] = $row->toArrayCurrent();
+    			} else {
+    				$return[] = $row->toArrayCurrent();
+    			}
+    		} else {
+    			throw new Exception\RuntimeException(
+    					'Rows as part of this DataSource, with type ' . gettype($row) . ' cannot be cast to an array Current'
+    			);
+    		}
+    	}
+    
+    	return $return;
     }
 
     public function toArrayGroup($indice)
