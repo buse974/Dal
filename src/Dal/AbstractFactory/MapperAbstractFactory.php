@@ -20,6 +20,7 @@ class MapperAbstractFactory extends AbstractFactory
         $adapter = $serviceLocator->get($this->getConfig($serviceLocator)['adapter']);
 
         $resultSetPrototype = new ResultSet();
+        $resultSetPrototype->buffer(true);
         $resultSetPrototype->setArrayObjectPrototype($serviceLocator->get('dal_model_' . $name_table));
         $tableGateway = new TableGateway($name_table, $adapter, null, $resultSetPrototype, new Sql($adapter, $name_table));
         $obj =  $this->getConfig($serviceLocator)['namespace']['mapper'] . '\\' . $this->toCamelCase($name_table);

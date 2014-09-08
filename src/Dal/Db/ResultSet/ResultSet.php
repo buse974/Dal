@@ -23,9 +23,9 @@ class ResultSet extends BaseResultSet implements JsonSerializable
        return $this->toArray();
     }
 
-    public function toArrayParent($chaine_parent = 'parent_id', $chaine_id = 'id')
+    public function toArrayParent($chaine_parent = 'parent_id', $chaine_id = 'id', $indice = null)
     {
-        $array=$this->toArray();
+        $array=$this->toArray($indice);
 
         $num=0;
         $final=array();
@@ -33,7 +33,11 @@ class ResultSet extends BaseResultSet implements JsonSerializable
             $is_present = false;
             foreach ($array as $key => $elm) {
                 if ($elm[$chaine_parent]==$num) {
-                    $final[] = $elm;
+                	if(null!==$indice) {
+                    	$final[$key] = $elm;
+                	} else {
+                		$final[] = $elm;
+                	}
                     $num = $elm[$chaine_id];
                     unset($array[$key]);
                     $is_present = true;
@@ -76,6 +80,7 @@ class ResultSet extends BaseResultSet implements JsonSerializable
     			}
     		}
     	}
+    	
     	return $return;
     }
     
