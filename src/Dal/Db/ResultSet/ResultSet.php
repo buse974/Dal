@@ -18,6 +18,8 @@ use Zend\Db\ResultSet\ResultSet as BaseResultSet;
  */
 class ResultSet extends BaseResultSet implements JsonSerializable
 {
+	protected $bufferArrayObjectPrototype=false;
+	
     public function jsonSerialize()
     {
        return $this->toArray();
@@ -175,5 +177,27 @@ class ResultSet extends BaseResultSet implements JsonSerializable
             }
 
             return $tabr;
+    }
+    
+    public function bufferArrayObjectPrototype()
+    {
+    	$this->buffer();
+    	$this->bufferArrayObjectPrototype=true;
+    }
+    
+    /**
+     * Iterator: get current item
+     *
+     * @return array
+     */
+    public function current()
+    {
+    	$data = parent::current();
+    	 
+    	if($this->bufferArrayObjectPrototype && $this->buffer[$this->position]!==$data) {
+    	 	$this->buffer[$this->position]=$data;
+    	}
+    	 
+    	return $data; 
     }
 }
