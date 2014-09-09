@@ -57,25 +57,24 @@ class ResultSet extends BaseResultSet implements JsonSerializable
      * @return array
      * @throws Exception\RuntimeException if any row is not castable to an array
      */
-    public function toArray($indice = null, $is_muliple = false)
+    public function toArray($indice = null, $next_indice = null)
     {
     	$return = array();
     	foreach ($this as $row) {
     		if (is_array($row)) {
     			if($indice!==null && isset($row[$indice])) {
-    				if($is_muliple) {
-    					$return[$row[$indice]][] = $row;
+    				if($next_indice && isset($row[$next_indice])) {
+    					$return[$row[$indice]][$row[$next_indice]] = $row;
     				} else {
     					$return[$row[$indice]] = $row;
     				}
     			} else {
     				$return[] = $row;
     			}
-    		} elseif (method_exists($row, 'toArray')) {
-    			$methode = str_replace(array('_a','_b','_c','_d','_e','_f','_g','_h','_i','_j','_k','_l','_m','_n','_o','_p','_q','_r','_s','_t','_u','_v','_w','_x','_y','_z'),array('A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'), 'get_' . $indice);
-    			if($indice!==null && method_exists($row,$methode)) {
-    				if($is_muliple) {
-    					$return[$row->$methode()][] = $row->toArray();
+    		} elseif (method_exists($row, 'toArray')) {   			
+    			if($indice!==null && ($methode = str_replace(array('_a','_b','_c','_d','_e','_f','_g','_h','_i','_j','_k','_l','_m','_n','_o','_p','_q','_r','_s','_t','_u','_v','_w','_x','_y','_z'),array('A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'), 'get_' . $indice)) && method_exists($row,$methode)) {
+    				if($next_indice!==null && ($next_methode = str_replace(array('_a','_b','_c','_d','_e','_f','_g','_h','_i','_j','_k','_l','_m','_n','_o','_p','_q','_r','_s','_t','_u','_v','_w','_x','_y','_z'),array('A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'), 'get_' . $next_indice)) && method_exists($row,$next_methode)) {
+    					$return[$row->$methode()][$row->$next_methode()] = $row->toArray();
     				} else {
     					$return[$row->$methode()] = $row->toArray();
     				}
@@ -83,14 +82,15 @@ class ResultSet extends BaseResultSet implements JsonSerializable
     				$return[] = $row->toArray();
     			}
     		} elseif (method_exists($row, 'getArrayCopy')) {
-    			if($indice!==null && method_exists($row, 'get' . ucfirst($indice))) {
-    				if($is_muliple) {
-    					$return[$row->{'get' . ucfirst($indice)}()][] = $row->getArrayCopy();
+    			$tmp_array = $row->getArrayCopy();
+    			if($indice!==null && isset($tmp_array[$indice])) {
+    				if($next_indice!==null && isset($tmp_array[$next_indice])) {
+    					$return[$tmp_array[$indice]][$tmp_array[$next_indice]] = $tmp_array;
     				} else {
-    					$return[$row->{'get' . ucfirst($indice)}()] = $row->getArrayCopy();
+    					$return[$tmp_array[$indice]] = $tmp_array;
     				}
     			} else {
-    				$return[] = $row->getArrayCopy();
+    				$return[] = $tmp_array;
     			}
     		}
     	}
