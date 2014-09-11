@@ -63,7 +63,7 @@ class ResultSet extends BaseResultSet implements JsonSerializable
     	foreach ($this as $row) {
     		if (is_array($row)) {
     			if($indice!==null && isset($row[$indice])) {
-    				if($next_indice && isset($row[$next_indice])) {
+    				if($next_indice!==null && isset($row[$next_indice])) {
     					$return[$row[$indice]][$row[$next_indice]] = $row;
     				} else {
     					$return[$row[$indice]] = $row;
