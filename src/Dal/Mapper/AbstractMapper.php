@@ -263,6 +263,9 @@ abstract class AbstractMapper implements ServiceLocatorAwareInterface
         if (!isset($options['p'])) {
             $options['p'] = 1;
         }
+        if (!isset($options['s'])) {
+        	$options['s'] = null;
+        }
 
         if ($select instanceof \Zend\Db\Sql\Select) {
             $this->paginator = new Paginator(new DbSelect(
@@ -275,7 +278,7 @@ abstract class AbstractMapper implements ServiceLocatorAwareInterface
 
         } elseif (is_array($select)) {
             $this->paginator = $select;
-            $ret = $select[0] . ' LIMIT '.$options['n'].' OFFSET '.(($options['p']-1)*$options['n']);
+            $ret = sprintf('%s LIMIT %s OFFSET %s',$select[0],$options['n'],(($options['p']-1)*$options['n']));
         }
 
         return $ret;
@@ -292,7 +295,7 @@ abstract class AbstractMapper implements ServiceLocatorAwareInterface
         if ($pag instanceof \Zend\Paginator\Paginator) {
             return $pag->getTotalItemCount();
         } elseif (is_array($pag)) {
-           $req_count = 'SELECT count(1) as `count` FROM ( ' . $pag[0] . ' ) C';
+           $req_count = sprintf('SELECT count(1) as `count` FROM ( %s ) C',$pag[0]);
            $statement = $this->tableGateway->getAdapter()->query($req_count);
            $result = $statement->execute($pag[1]);
 
