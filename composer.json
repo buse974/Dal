@@ -1,7 +1,7 @@
 {
   "name": "buse974/dal",
   "description": "Data Access Layer for ZF2",
-  "type": "library",
+  "type": "module",
   "homepage": "https://github.com/buse974/Dal",
   "license": "MIT",
   "authors": [
