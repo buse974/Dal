@@ -12,6 +12,7 @@ namespace Dal\Db\TableGateway;
 use Zend\Db\TableGateway\TableGateway as BaseTableGateway;
 use Zend\Db\Adapter\Adapter as ADT;
 use Zend\Db\Metadata\Metadata;
+use Dal\Db\ResultSet\ResultSet;
 
 class TableGateway extends BaseTableGateway
 {
@@ -34,7 +35,7 @@ class TableGateway extends BaseTableGateway
    }
 
    /**
-    *
+    * 
     * @param string $sql
     * @param array  $param
     */
@@ -47,6 +48,21 @@ class TableGateway extends BaseTableGateway
           $statement->getResource()->closeCursor();
 
           return $res;
+    }
+    
+    /**
+     *
+     * @param string $sql
+     * @param array  $param
+     */
+    public function selectNMPdo($request,$param = null)
+    {
+    	$statement = $this->getAdapter()->query($request,ADT::QUERY_MODE_PREPARE);
+    	$result = $statement->execute($param);
+    
+    	$resultSet = new ResultSet();
+    	
+    	return $resultSet->initialize($result);
     }
 
     /**

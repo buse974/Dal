@@ -92,6 +92,22 @@ abstract class AbstractMapper implements ServiceLocatorAwareInterface
 
         return $this->result;
     }
+    
+    /**
+     *
+     * @return \Dal\Db\ResultSet\ResultSet
+     */
+    public function selectNMPdo($select,$param = null)
+    {
+    	if ($this->usePaginator) {
+    		$this->usePaginator = false;
+    
+    		$select = $this->initPaginator(array($select,$param));
+    	}
+    	$this->result = $this->tableGateway->selectNMPdo($select,$param);
+    
+    	return $this->result;
+    }
 
     /**
      * Get request

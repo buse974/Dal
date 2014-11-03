@@ -57,37 +57,60 @@ class ResultSet extends BaseResultSet implements JsonSerializable
      * @return array
      * @throws Exception\RuntimeException if any row is not castable to an array
      */
-    public function toArray($indice = null, $next_indice = null)
+    public function toArray($indice = null, $next_indice = null, $unset_indice = false)
     {
     	$return = array();
     	foreach ($this as $row) {
     		if (is_array($row)) {
     			if($indice!==null && isset($row[$indice])) {
+    				$indu = $row[$indice];
+    				if($unset_indice) {
+    					unset($row[$indice]);
+    				}
     				if($next_indice!==null && isset($row[$next_indice])) {
-    					$return[$row[$indice]][$row[$next_indice]] = $row;
+    					$indd = $row[$next_indice];
+    					if($unset_indice) {
+    						unset($row[$next_indice]);
+    					}
+    					$return[$indu][$indd] = $row;
     				} else {
-    					$return[$row[$indice]] = $row;
+    					$return[$indu] = $row;
     				}
     			} else {
     				$return[] = $row;
     			}
-    		} elseif (method_exists($row, 'toArray')) {   			
+    		} elseif (method_exists($row, 'toArray')) { 
+    			$tmp_row = $row->toArray();
     			if($indice!==null && ($methode = str_replace(array('_a','_b','_c','_d','_e','_f','_g','_h','_i','_j','_k','_l','_m','_n','_o','_p','_q','_r','_s','_t','_u','_v','_w','_x','_y','_z'),array('A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'), 'get_' . $indice)) && method_exists($row,$methode)) {
+    				if($unset_indice) {
+    					unset($tmp_row[$indice]);
+    				}
     				if($next_indice!==null && ($next_methode = str_replace(array('_a','_b','_c','_d','_e','_f','_g','_h','_i','_j','_k','_l','_m','_n','_o','_p','_q','_r','_s','_t','_u','_v','_w','_x','_y','_z'),array('A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'), 'get_' . $next_indice)) && method_exists($row,$next_methode)) {
-    					$return[$row->$methode()][$row->$next_methode()] = $row->toArray();
+    					if($unset_indice) {
+    						unset($tmp_row[$next_indice]);
+    					}
+    					$return[$row->$methode()][$row->$next_methode()] = $tmp_row;
     				} else {
-    					$return[$row->$methode()] = $row->toArray();
+    					$return[$row->$methode()] = $tmp_row;
     				}
     			} else {
-    				$return[] = $row->toArray();
+    				$return[] = $tmp_row;
     			}
     		} elseif (method_exists($row, 'getArrayCopy')) {
     			$tmp_array = $row->getArrayCopy();
     			if($indice!==null && isset($tmp_array[$indice])) {
+    				$indu = $tmp_array[$indice];
+    				if($unset_indice) {
+    					unset($tmp_array[$indice]);
+    				}
     				if($next_indice!==null && isset($tmp_array[$next_indice])) {
-    					$return[$tmp_array[$indice]][$tmp_array[$next_indice]] = $tmp_array;
+    					$indd = $tmp_array[$next_indice];
+    					if($unset_indice) {
+    						unset($tmp_array[$next_indice]);
+    					}
+    					$return[$indu][$indd] = $tmp_array;
     				} else {
-    					$return[$tmp_array[$indice]] = $tmp_array;
+    					$return[$indu] = $tmp_array;
     				}
     			} else {
     				$return[] = $tmp_array;
