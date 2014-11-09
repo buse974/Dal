@@ -12,30 +12,46 @@ namespace Dal\Db\ResultSet;
 
 use JsonSerializable;
 use Zend\Db\ResultSet\ResultSet as BaseResultSet;
-/**
- * @package    Dal_Db
- * @subpackage ResultSet
- */
+
 class ResultSet extends BaseResultSet implements JsonSerializable
 {
 	protected $bufferArrayObjectPrototype=false;
 
-    public function toArrayParent($chaine_parent = 'parent_id', $chaine_id = 'id', $indice = null)
+	/**
+	 * To Array by parent id
+	 * 
+	 * @param string $chaine_parent
+	 * @param string $chaine_id
+	 * @param array $indices
+	 * @param string $unset_indice
+	 * 
+	 * @return array
+	 */
+    public function toArrayParent($chaine_parent = 'parent_id', $chaine_id = 'id',array $indices = array(), $unset_indice = false)
     {
-        $array=$this->toArray(array($indice));
+        $array=$this->toArray();
 
         $num=0;
         $final=array();
         do {
             $is_present = false;
-            foreach ($array as $key => $elm) {
-                if ($elm[$chaine_parent]==$num) {
-                	if(null!==$indice) {
-                    	$final[$key] = $elm;
-                	} else {
-                		$final[] = $elm;
+            foreach ($array as $key => $row) {
+                if ($row[$chaine_parent]==$num) {
+                	if(count($indices) > 0) {
+                		$buffer = &$final;
+                		foreach ($indices as $indice) {
+                			if(isset($row[$indice])) {
+                				$buffer = &$buffer[$row[$indice]];
+                				if($unset_indice) {
+                					unset($row[$indice]);
+                				}
+                			}
+                		}
+                		$buffer = $row;
+                	}else {
+                		$final[] = $row;
                 	}
-                    $num = $elm[$chaine_id];
+                    $num = $row[$chaine_id];
                     unset($array[$key]);
                     $is_present = true;
                     break;
@@ -86,7 +102,7 @@ class ResultSet extends BaseResultSet implements JsonSerializable
      * @return array
      * @throws Exception\RuntimeException if any row is not castable to an array
      */
-    public function toArrayCurrent($indices = null, $unset_indice = false)
+    public function toArrayCurrent(array $indices = array(), $unset_indice = false)
     {
     	$return = array();
     	foreach ($this as $row) {
@@ -97,8 +113,7 @@ class ResultSet extends BaseResultSet implements JsonSerializable
     					'Rows as part of this DataSource, with type ' . gettype($row) . ' cannot be cast to an array Current'
     			);
     		}
-    		
-    		if($indices!==NULL) {
+    		if(count($indices) > 0) {
     			$buffer = &$return;
     			foreach ($indices as $indice) {
     				if(isset($row[$indice])) {
@@ -139,6 +154,10 @@ class ResultSet extends BaseResultSet implements JsonSerializable
     	return $data; 
     }
     
+    /**
+     * (non-PHPdoc)
+     * @see JsonSerializable::jsonSerialize()
+     */
     public function jsonSerialize()
     {
     	return $this->toArray();
