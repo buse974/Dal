@@ -51,7 +51,8 @@ class TableGateway extends BaseTableGateway
     }
     
     /**
-     *
+     * Select whith PDO without mappage
+     * 
      * @param string $sql
      * @param array  $param
      */

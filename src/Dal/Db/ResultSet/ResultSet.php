@@ -19,15 +19,10 @@ use Zend\Db\ResultSet\ResultSet as BaseResultSet;
 class ResultSet extends BaseResultSet implements JsonSerializable
 {
 	protected $bufferArrayObjectPrototype=false;
-	
-    public function jsonSerialize()
-    {
-       return $this->toArray();
-    }
 
     public function toArrayParent($chaine_parent = 'parent_id', $chaine_id = 'id', $indice = null)
     {
-        $array=$this->toArray($indice);
+        $array=$this->toArray(array($indice));
 
         $num=0;
         $final=array();
@@ -57,7 +52,7 @@ class ResultSet extends BaseResultSet implements JsonSerializable
      * @return array
      * @throws Exception\RuntimeException if any row is not castable to an array
      */
-    public function toArray($indices = null, $unset_indice = false)
+    public function toArray(array $indices = array(), $unset_indice = false)
     {
     	$return = array();
     	foreach ($this as $row) {
@@ -66,7 +61,7 @@ class ResultSet extends BaseResultSet implements JsonSerializable
     		} elseif (method_exists($row, 'getArrayCopy')) {
     			$row = $row->getArrayCopy();
     		}
-    		if($indices!==NULL) {
+    		if(count($indices) > 0) {
     			$buffer = &$return;
 	    		foreach ($indices as $indice) {
 	    			if(isset($row[$indice])) {
@@ -91,7 +86,7 @@ class ResultSet extends BaseResultSet implements JsonSerializable
      * @return array
      * @throws Exception\RuntimeException if any row is not castable to an array
      */
-    public function toArrayCurrent($indice = null)
+    public function toArrayCurrent($indices = null, $unset_indice = false)
     {
     	$return = array();
     	foreach ($this as $row) {
@@ -122,67 +117,6 @@ class ResultSet extends BaseResultSet implements JsonSerializable
     	return $return;
     }
 
-    public function toArrayGroup($indice)
-    {
-        if (!is_array($indice)) {
-            $indice = array($indice);
-        }
-
-        $array = $this->toArray();
-        $doubleTableau = array();
-        $newArray = array();
-        $ident = true;
-
-        foreach ($array as $elm) {
-            if (count($newArray)!==0) {
-                foreach ($indice as $ind) {
-                    $ident &= ($elm[$ind] == $newArray[0][$ind]);
-                }
-            }
-            if ($ident) {
-                $newArray[] = $elm;
-            } else {
-                $doubleTableau[] = $newArray;
-                $newArray = array();
-                $ident = true;
-                $newArray[] = $elm;
-            }
-        }
-        $doubleTableau[] = $newArray;
-        // ici on rassemble tout les tableaux double
-        foreach ($doubleTableau as $tt) {
-            if (count($tt)==1) {
-                $mod =array();
-                // si on a qu'un seule element on met dans un tableau les groups demandé
-                foreach (current($tt) as $key => $val) {
-                    $mod[$key] = (in_array ($key , $indice)) ? $val :  $mod[$key] = array($val);
-                }
-            } else {
-                $mod = $this->group($tt,$indice);
-            }
-            $ret[] = $mod;
-        }
-
-        return $ret;
-    }
-
-    public function group($array,$indice)
-    {
-            $tabr = array();
-            foreach ($array as $tab) {
-                $tabr = array_merge_recursive($tabr,array_map("serialize", $tab ));
-            }
-
-            $tabr = array_map('array_reverse',array_map('array_unique',$tabr));
-
-            foreach ($tabr as $key => $tt) {
-                $tt = array_map('unserialize',$tabr[$key]);
-                $tabr[$key] = (in_array ($key , $indice)) ?  $tt[0] : $tt;
-            }
-
-            return $tabr;
-    }
-    
     public function bufferArrayObjectPrototype()
     {
     	$this->buffer();
@@ -203,5 +137,10 @@ class ResultSet extends BaseResultSet implements JsonSerializable
     	}
     	 
     	return $data; 
+    }
+    
+    public function jsonSerialize()
+    {
+    	return $this->toArray();
     }
 }

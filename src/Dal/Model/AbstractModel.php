@@ -81,27 +81,20 @@ abstract class AbstractModel implements JsonSerializable, ServiceLocatorAwareInt
         foreach ($vars as $key => &$value) {
             if ($value===null) {
                 unset($vars[$key]);
-            } elseif (is_object($value) && method_exists($value, 'toArray')) {
-                $value = $value->toArray();
-                if (count($value)==0) {
-                    unset($vars[$key]);
-                }
-            } elseif (is_object($value) && $value instanceof IsNull) {
-                    $vars[$key] = null;
-            } elseif (is_array($value)) {
-                foreach ($value as &$tabval) {
-                    if (is_object($tabval) && method_exists($value, 'toArray')) {
-                        $tabval = $tabval->toArray();
-                        if (count($tabval)==0) {
-                            unset($tabval);
-                        } elseif (is_object($value) && $value instanceof IsNull) {
-                            $tabval = null;
-                        }
-                    }
-                }
             } elseif (is_object($value)) {
-                unset($vars[$key]);
-            } elseif ( is_bool($value)) {
+            	if(method_exists($value, 'toArray')) {
+            		$value = $value->toArray();
+            		if (count($value)==0) {
+            			unset($vars[$key]);
+            		}
+            	} elseif ($value instanceof IsNull) {
+            		$vars[$key] = null;
+            	} else {
+            		unset($vars[$key]);
+            	}
+            } elseif (is_array($value)) {
+            	$vars[$key] = $value; 
+            } elseif (is_bool($value)) {
                 $vars[$key] = (int) $value;
             }
         }
@@ -144,16 +137,6 @@ abstract class AbstractModel implements JsonSerializable, ServiceLocatorAwareInt
     public function jsonSerialize()
     {
         return $this->toArray();
-    }
-
-    protected function getStaticUrl()
-    {
-        return ($this->getServiceLocator()) ? $this->getServiceLocator()->get('config')['path_static'] : null;
-    }
-
-    protected function getDmsUrl()
-    {
-        return ($this->getServiceLocator()) ? $this->getServiceLocator()->get('config')['path_dms'] : null;
     }
 
     protected function getParentArray()
