@@ -6,9 +6,11 @@ return array(
 			'cache'   => 'storage_memcached',
 			'log'     => 'log-system',
 			'namespace' => array(
+				'dal' => array(
 					'service' => 'Dal\\Service',
 					'mapper'  => 'Dal\\Mapper',
 					'model'   => 'Dal\\Model',
+				)
 			)
 	),
 );
