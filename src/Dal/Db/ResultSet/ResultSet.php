@@ -12,6 +12,7 @@ namespace Dal\Db\ResultSet;
 
 use JsonSerializable;
 use Zend\Db\ResultSet\ResultSet as BaseResultSet;
+use Dal\Model\AbstractModel;
 
 class ResultSet extends BaseResultSet implements JsonSerializable
 {
@@ -106,13 +107,21 @@ class ResultSet extends BaseResultSet implements JsonSerializable
     {
     	$return = array();
     	foreach ($this as $row) {
-    		if(method_exists($row, 'toArrayCurrent')) {
+    		if($row instanceof AbstractModel) {
     			$row = $row->toArrayCurrent();
-    		} elseif(!is_array($row)) {
-    			throw new Exception\RuntimeException(
+    		} elseif(method_exists($row, 'toArray')) {
+    			$row = $row->toArray();
+    		} elseif (method_exists($row, 'getArrayCopy')) {
+    			$row = $row->getArrayCopy();
+    		}
+    			
+    			
+    		if(!is_array($row)) {
+    			throw new \RuntimeException(
     					'Rows as part of this DataSource, with type ' . gettype($row) . ' cannot be cast to an array Current'
     			);
     		}
+    		
     		if(count($indices) > 0) {
     			$buffer = &$return;
     			foreach ($indices as $indice) {

@@ -2,9 +2,7 @@
 
 namespace Dal\Stdlib\Hydrator;
 
-use Zend\Stdlib\Hydrator\ClassMethods as BaseClassMethods;
-
-class ClassMethods extends BaseClassMethods
+class ClassMethods 
 {
     public function extract($object)
     {
@@ -31,13 +29,16 @@ class ClassMethods extends BaseClassMethods
      * @return object
      * @throws Exception\BadMethodCallException for a non-object $object
      */
-    public function hydrate(array $data, $object)
+    public function hydrate(array &$data, $object, $unset = false)
     {
         foreach ($data as $property => $value) {
             $method = str_replace(array('_a','_b','_c','_d','_e','_f','_g','_h','_i','_j','_k','_l','_m','_n','_o','_p','_q','_r','_s','_t','_u','_v','_w','_x','_y','_z'),array('A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'), 'set_' . $property);
 
             if (is_callable(array($object, $method))) {
                 $object->$method($value);
+                if ($unset === true) {
+                	unset($data[$property]);
+                }
             }
         }
 

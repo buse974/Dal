@@ -84,5 +84,4 @@ class TableGateway extends BaseTableGateway
 
         return $this->primary;
     }
-
 }

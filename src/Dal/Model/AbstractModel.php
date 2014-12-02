@@ -63,7 +63,7 @@ abstract class AbstractModel implements JsonSerializable, ServiceLocatorAwareInt
         if (!empty($formatted)) {
             $hydrator->hydrate($formatted, $this);
         } else {
-            $hydrator->hydrate($data, $this);
+            $hydrator->hydrate($data, $this, true);
         }
 
         return $this;
@@ -123,15 +123,6 @@ abstract class AbstractModel implements JsonSerializable, ServiceLocatorAwareInt
     public function allParent()
     {
         return (null !== $this->parent_model) ? $this->parent_model->allParent() . '_' . $this->prefix : $this->prefix;
-    }
-
-    public function toArrayKeys()
-    {
-        $array = get_object_vars($this);
-        unset($array['service_manager']);
-        unset($array['prefix']);
-
-        return array_keys($array);
     }
 
     public function jsonSerialize()
