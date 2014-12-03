@@ -5,4 +5,14 @@
  */
 
 return array(
+		'dal-conf' => array(
+				'adapter' => 'adapter',
+				'namespace' => array(
+						'dal-test' => array(
+								'service' => 'Mock\\Service',
+								'mapper'  => 'Mock\\Mapper',
+								'model'   => 'Mock\\Model',
+						)
+				)
+		),
 );

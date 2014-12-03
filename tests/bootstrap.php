@@ -33,13 +33,16 @@ class bootstrap
         $vendorPath = static::findParentPath('vendor');
         $zf2Path = $vendorPath . '/zendframework/zendframework/library/';
 
-        include $zf2Path . '/Zend/Loader/AutoloaderFactory.php';
+        //include $zf2Path . '/Zend/Loader/AutoloaderFactory.php';
         \Zend\Loader\AutoloaderFactory::factory(array(
             'Zend\Loader\StandardAutoloader' => array(
-                'autoregister_zf' => true
+               'autoregister_zf' => true,
+               'namespaces' => array('Mock' => __DIR__ .'/Mock')
             )
         ));
 
+        
+        
         $serviceManager = new ServiceManager(new ServiceManagerConfig());
         $serviceManager->setService('ApplicationConfig', include __DIR__ . '/config/application.config.php');
         $serviceManager->get('ModuleManager')->loadModules();
