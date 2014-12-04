@@ -8,24 +8,24 @@ class ServiceAbstractFactory extends AbstractFactory
 {
     public function canCreateServiceWithName(ServiceLocatorInterface $serviceLocator, $name, $requestedName)
     {
-    	$namespace = $this->getConfig($serviceLocator)['namespace'];
-    	$ar = explode('_', $requestedName);
+        $namespace = $this->getConfig($serviceLocator)['namespace'];
+        $ar = explode('_', $requestedName);
 
-    	return (count($ar) >= 2 && array_key_exists($ar[0], $namespace) && $ar[1]==='service');
+        return (count($ar) >= 2 && array_key_exists($ar[0], $namespace) && $ar[1] === 'service');
     }
 
     public function createServiceWithName(ServiceLocatorInterface $serviceLocator, $name, $requestedName)
     {
-    	$prefix = current(explode('_', $requestedName));
-    	$namespace = $this->getConfig($serviceLocator)['namespace'][$prefix];
+        $prefix = current(explode('_', $requestedName));
+        $namespace = $this->getConfig($serviceLocator)['namespace'][$prefix];
         $name = substr($requestedName, strlen($prefix) + 9);
-      
-        $class = $namespace['service'] . '\\' . $this->toCamelCase($name);
-        
-        if(!class_exists($class)) {
-            throw new \Exception('class does not exist : ' . $class);
+
+        $class = $namespace['service'].'\\'.$this->toCamelCase($name);
+
+        if (!class_exists($class)) {
+            throw new \Exception('class does not exist : '.$class);
         }
 
-        return new $class($prefix . '_mapper_' . $name);
+        return new $class($prefix.'_mapper_'.$name);
     }
 }

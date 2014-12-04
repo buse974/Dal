@@ -24,46 +24,46 @@ class TableGateway extends BaseTableGateway
     * @param  array                       $param
     * @return \Dal\Db\ResultSet\ResultSet
     */
-    public function selectPdo($select,$param = null)
+    public function selectPdo($select, $param = null)
     {
-           $statement = $this->getAdapter()->query($select,ADT::QUERY_MODE_PREPARE);
-           $result = $statement->execute($param);
+        $statement = $this->getAdapter()->query($select, ADT::QUERY_MODE_PREPARE);
+        $result = $statement->execute($param);
 
-           $resultSet = clone $this->resultSetPrototype;
+        $resultSet = clone $this->resultSetPrototype;
 
-           return $resultSet->initialize($result);
-   }
+        return $resultSet->initialize($result);
+    }
 
    /**
-    * 
+    *
     * @param string $sql
     * @param array  $param
     */
-    public function requestPdo($request,$param = null)
+    public function requestPdo($request, $param = null)
     {
-          $statement = $this->getAdapter()->query($request,ADT::QUERY_MODE_PREPARE);
-          $res = $statement->execute($param)->count();
+        $statement = $this->getAdapter()->query($request, ADT::QUERY_MODE_PREPARE);
+        $res = $statement->execute($param)->count();
 
-          $this->lastInsertValue = $this->getAdapter()->getDriver()->getLastGeneratedValue();
-          $statement->getResource()->closeCursor();
+        $this->lastInsertValue = $this->getAdapter()->getDriver()->getLastGeneratedValue();
+        $statement->getResource()->closeCursor();
 
-          return $res;
+        return $res;
     }
-    
+
     /**
      * Select whith PDO without mappage
-     * 
+     *
      * @param string $sql
      * @param array  $param
      */
-    public function selectNMPdo($request,$param = null)
+    public function selectNMPdo($request, $param = null)
     {
-    	$statement = $this->getAdapter()->query($request,ADT::QUERY_MODE_PREPARE);
-    	$result = $statement->execute($param);
-    
-    	$resultSet = new ResultSet();
-    	
-    	return $resultSet->initialize($result);
+        $statement = $this->getAdapter()->query($request, ADT::QUERY_MODE_PREPARE);
+        $result = $statement->execute($param);
+
+        $resultSet = new ResultSet();
+
+        return $resultSet->initialize($result);
     }
 
     /**
@@ -76,7 +76,7 @@ class TableGateway extends BaseTableGateway
             $constraints = $metadata->getConstraints($this->getTable());
 
             foreach ($constraints as $constraint) {
-                if ($constraint->getType()=='PRIMARY KEY') {
+                if ($constraint->getType() == 'PRIMARY KEY') {
                     $this->primary = $constraint->getColumns();
                 }
             }

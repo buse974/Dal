@@ -19,7 +19,7 @@ class bootstrap
     {
         session_start();
         $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
-        ini_set('date.timezone',"Europe/Paris");
+        ini_set('date.timezone', "Europe/Paris");
         static::initAutoloader();
     }
 
@@ -31,20 +31,18 @@ class bootstrap
     protected static function initAutoloader()
     {
         $vendorPath = static::findParentPath('vendor');
-        $zf2Path = $vendorPath . '/zendframework/zendframework/library/';
+        $zf2Path = $vendorPath.'/zendframework/zendframework/library/';
 
         //include $zf2Path . '/Zend/Loader/AutoloaderFactory.php';
         \Zend\Loader\AutoloaderFactory::factory(array(
             'Zend\Loader\StandardAutoloader' => array(
                'autoregister_zf' => true,
-               'namespaces' => array('Mock' => __DIR__ .'/Mock')
-            )
+               'namespaces' => array('Mock' => __DIR__.'/Mock'),
+            ),
         ));
 
-        
-        
         $serviceManager = new ServiceManager(new ServiceManagerConfig());
-        $serviceManager->setService('ApplicationConfig', include __DIR__ . '/config/application.config.php');
+        $serviceManager->setService('ApplicationConfig', include __DIR__.'/config/application.config.php');
         $serviceManager->get('ModuleManager')->loadModules();
         static::$serviceManager = $serviceManager;
     }
@@ -53,15 +51,16 @@ class bootstrap
     {
         $dir = __DIR__;
         $previousDir = '.';
-        while (!is_dir($dir . '/' . $path)) {
+        while (!is_dir($dir.'/'.$path)) {
             $dir = dirname($dir);
-            if ($previousDir === $dir) return false;
+            if ($previousDir === $dir) {
+                return false;
+            }
             $previousDir = $dir;
         }
 
-        return $dir . '/' . $path;
+        return $dir.'/'.$path;
     }
-
 }
 
 Bootstrap::init();

@@ -13,7 +13,7 @@ abstract class AbstractService implements ServiceLocatorAwareInterface
     public function __construct($mapper = null)
     {
         if ($mapper !== null) {
-            $this->mapper=$mapper;
+            $this->mapper = $mapper;
         }
     }
 

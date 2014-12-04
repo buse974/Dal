@@ -2,7 +2,6 @@
 
 namespace Dal\Db\Sql;
 
-use Zend\Db\Sql\Exception;
 use Zend\Db\Sql\Select as BaseSelect;
 
 class Select extends BaseSelect
@@ -21,7 +20,7 @@ class Select extends BaseSelect
                     continue;
                 }
                 unset($columns[$key]);
-                $columns[$prefix . '$' . $column] = $column;
+                $columns[$prefix.'$'.$column] = $column;
             }
         }
 
@@ -37,11 +36,11 @@ class Select extends BaseSelect
 
     public function join($name, $on, $columns = self::SQL_STAR, $type = self::JOIN_INNER)
     {
-    	if (!is_array($columns)) {
-    		$columns = array($columns);
-    	}
-    	$columns = $this->aliasing($columns, $name);
- 
-    	return parent::join($name, $on, $columns, $type);
+        if (!is_array($columns)) {
+            $columns = array($columns);
+        }
+        $columns = $this->aliasing($columns, $name);
+
+        return parent::join($name, $on, $columns, $type);
     }
 }

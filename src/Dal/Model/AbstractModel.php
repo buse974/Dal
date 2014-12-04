@@ -26,10 +26,10 @@ abstract class AbstractModel implements JsonSerializable, ServiceLocatorAwareInt
      */
     public function __construct(AbstractModel $parent_model = null, $prefix = null)
     {
-        if ($prefix!==null) {
+        if ($prefix !== null) {
             $this->prefix = $prefix;
         }
-        if ($parent_model!==null) {
+        if ($parent_model !== null) {
             $this->parent_model = $parent_model;
         }
     }
@@ -43,18 +43,18 @@ abstract class AbstractModel implements JsonSerializable, ServiceLocatorAwareInt
     {
         foreach ($data as &$val) {
             if (empty($val) && !is_numeric($val)) {
-              $val = new IsNull();
+                $val = new IsNull();
             }
         }
         $formatted = array();
 
         if ($this->prefix !== null) {
-             foreach ($data as $key => $value) {
-                if (0===strpos($key, $this->allParent() . $this->delimiter)) {
-                    $formatted[substr($key, strlen($this->allParent() . $this->delimiter))] = $value;
+            foreach ($data as $key => $value) {
+                if (0 === strpos($key, $this->allParent().$this->delimiter)) {
+                    $formatted[substr($key, strlen($this->allParent().$this->delimiter))] = $value;
                     unset($data[$key]);
-                } elseif (0===strpos($key, $this->prefix . $this->delimiter)) {
-                    $formatted[substr($key, strlen($this->prefix . $this->delimiter))] = $value;
+                } elseif (0 === strpos($key, $this->prefix.$this->delimiter)) {
+                    $formatted[substr($key, strlen($this->prefix.$this->delimiter))] = $value;
                     unset($data[$key]);
                 }
             }
@@ -79,21 +79,21 @@ abstract class AbstractModel implements JsonSerializable, ServiceLocatorAwareInt
         $vars = $hydrator->extract($this);
 
         foreach ($vars as $key => &$value) {
-            if ($value===null) {
+            if ($value === null) {
                 unset($vars[$key]);
             } elseif (is_object($value)) {
-            	if(method_exists($value, 'toArray')) {
-            		$value = $value->toArray();
-            		if (count($value)==0) {
-            			unset($vars[$key]);
-            		}
-            	} elseif ($value instanceof IsNull) {
-            		$vars[$key] = null;
-            	} else {
-            		unset($vars[$key]);
-            	}
+                if (method_exists($value, 'toArray')) {
+                    $value = $value->toArray();
+                    if (count($value) == 0) {
+                        unset($vars[$key]);
+                    }
+                } elseif ($value instanceof IsNull) {
+                    $vars[$key] = null;
+                } else {
+                    unset($vars[$key]);
+                }
             } elseif (is_array($value)) {
-            	$vars[$key] = $value; 
+                $vars[$key] = $value;
             } elseif (is_bool($value)) {
                 $vars[$key] = (int) $value;
             }
@@ -108,11 +108,11 @@ abstract class AbstractModel implements JsonSerializable, ServiceLocatorAwareInt
         $vars = $hydrator->extract($this);
 
         foreach ($vars as $key => &$value) {
-            if ($value===null || (is_object($value) && !$value instanceof IsNull) || is_array($value)) {
+            if ($value === null || (is_object($value) && !$value instanceof IsNull) || is_array($value)) {
                 unset($vars[$key]);
-            } elseif ( is_object($value) && $value instanceof IsNull ) {
+            } elseif (is_object($value) && $value instanceof IsNull) {
                 $vars[$key] = null;
-            } elseif ( is_bool($value)) {
+            } elseif (is_bool($value)) {
                 $vars[$key] = (int) $value;
             }
         }
@@ -122,7 +122,7 @@ abstract class AbstractModel implements JsonSerializable, ServiceLocatorAwareInt
 
     public function allParent()
     {
-        return (null !== $this->parent_model) ? $this->parent_model->allParent() . '_' . $this->prefix : $this->prefix;
+        return (null !== $this->parent_model) ? $this->parent_model->allParent().'_'.$this->prefix : $this->prefix;
     }
 
     public function jsonSerialize()
@@ -178,5 +178,4 @@ abstract class AbstractModel implements JsonSerializable, ServiceLocatorAwareInt
     {
         return get_class($this);
     }
-
 }

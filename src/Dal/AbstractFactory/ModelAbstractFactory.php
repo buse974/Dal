@@ -16,10 +16,10 @@ class ModelAbstractFactory extends AbstractFactory
      */
     public function canCreateServiceWithName(ServiceLocatorInterface $serviceLocator, $name, $requestedName)
     {
-    	$namespace = $this->getConfig($serviceLocator)['namespace'];
-    	$ar = explode('_', $requestedName);
-    	 
-    	return (count($ar) >= 2 && array_key_exists($ar[0], $namespace) && $ar[1]==='model');
+        $namespace = $this->getConfig($serviceLocator)['namespace'];
+        $ar = explode('_', $requestedName);
+
+        return (count($ar) >= 2 && array_key_exists($ar[0], $namespace) && $ar[1] === 'model');
     }
 
     /**
@@ -33,15 +33,15 @@ class ModelAbstractFactory extends AbstractFactory
     public function createServiceWithName(ServiceLocatorInterface $serviceLocator, $name, $requestedName)
     {
         $prefix = current(explode('_', $requestedName));
-    	$namespace = $this->getConfig($serviceLocator)['namespace'][$prefix];
-    	$name_table = $this->toCamelCase(substr($requestedName, strlen($prefix) + 7));
-    	
-    	$class = $namespace['model'] . '\\' . $name_table;
-    	
-    	if (!class_exists($class)) {
-    		throw new \Exception("Not exist : " . $namespace['model'] . "\\" . $name_table . "\n");
-    	}
-    	
-    	return new $class();
+        $namespace = $this->getConfig($serviceLocator)['namespace'][$prefix];
+        $name_table = $this->toCamelCase(substr($requestedName, strlen($prefix) + 7));
+
+        $class = $namespace['model'].'\\'.$name_table;
+
+        if (!class_exists($class)) {
+            throw new \Exception("Not exist : ".$namespace['model']."\\".$name_table."\n");
+        }
+
+        return new $class();
     }
 }

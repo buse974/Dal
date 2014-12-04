@@ -28,7 +28,6 @@ abstract class AbstractFactory implements AbstractFactoryInterface
 
     public function toCamelCase($name)
     {
-        return ucwords(str_replace($this->underscore_alpha,$this->alpha, $name));
+        return ucwords(str_replace($this->underscore_alpha, $this->alpha, $name));
     }
-
 }

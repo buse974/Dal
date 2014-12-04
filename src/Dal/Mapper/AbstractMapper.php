@@ -37,7 +37,7 @@ abstract class AbstractMapper implements ServiceLocatorAwareInterface
 
     /**
      * Construct the model with the tablegateway
-     * 
+     *
      * @param TableGateway $tableGateway
      */
     public function __construct(TableGateway $tableGateway)
@@ -47,15 +47,15 @@ abstract class AbstractMapper implements ServiceLocatorAwareInterface
 
     /**
      * Update a modele
-     * 
-     * @param \Dal\Model\AbstractModel    $model
-     * @param array $order
-     * 
+     *
+     * @param \Dal\Model\AbstractModel $model
+     * @param array                    $order
+     *
      * @return \Dal\Db\ResultSet\ResultSet
      */
-    public function select(AbstractModel $model,$order =null)
+    public function select(AbstractModel $model, $order = null)
     {
-    	if ($this->usePaginator === true) {
+        if ($this->usePaginator === true) {
             $sl = $this->tableGateway->getSql()->select();
 
             $sl->where($model->toArrayCurrent());
@@ -74,64 +74,64 @@ abstract class AbstractMapper implements ServiceLocatorAwareInterface
 
     /**
      * Excecute request directly by PDO
-     * 
+     *
      * @param string $request
-     * @param array $param
-     * 
+     * @param array  $param
+     *
      * @return \Dal\Db\ResultSet\ResultSet
      */
-    public function requestPdo($request,$param = null)
+    public function requestPdo($request, $param = null)
     {
-        $this->result = $this->tableGateway->requestPdo($request,$param);
+        $this->result = $this->tableGateway->requestPdo($request, $param);
 
         return $this->result;
     }
 
     /**
      * Excecute select directly by PDO
-     * 
+     *
      * @param string $select
-     * @param array $param
-     * 
+     * @param array  $param
+     *
      * @return \Dal\Db\ResultSet\ResultSet
      */
-    public function selectPdo($select,$param = null)
+    public function selectPdo($select, $param = null)
     {
         if ($this->usePaginator === true) {
-            $select = $this->initPaginatorPDO(array($select,$param));
+            $select = $this->initPaginatorPDO(array($select, $param));
         }
-        $this->result = $this->tableGateway->selectPdo($select,$param);
+        $this->result = $this->tableGateway->selectPdo($select, $param);
 
         return $this->result;
     }
-    
+
     /**
      * Excecute select directly by PDO wihtout Mappage Model
-     * 
+     *
      * @param string $select
-     * @param array $param
-     * 
+     * @param array  $param
+     *
      * @return \Dal\Db\ResultSet\ResultSet
      */
-    public function selectNMPdo($select,$param = null)
+    public function selectNMPdo($select, $param = null)
     {
-    	if ($this->usePaginator === true) {
-    		$select = $this->initPaginatorPDO(array($select,$param));
-    	}
-    	$this->result = $this->tableGateway->selectNMPdo($select,$param);
-    
-    	return $this->result;
+        if ($this->usePaginator === true) {
+            $select = $this->initPaginatorPDO(array($select, $param));
+        }
+        $this->result = $this->tableGateway->selectNMPdo($select, $param);
+
+        return $this->result;
     }
 
     /**
      * Select request
-     * 
+     *
      * @param \Zend\Db\Sql\Select
      * @return \Zend\Db\ResultSet\ResultSet
      */
     public function selectWith(\Zend\Db\Sql\Select $select)
     {
-    	if ($this->usePaginator === true) {
+        if ($this->usePaginator === true) {
             return $this->initPaginator($select);
         }
 
@@ -142,12 +142,12 @@ abstract class AbstractMapper implements ServiceLocatorAwareInterface
 
     /**
      * Fetch All
-     * 
+     *
      * @return \Zend\Db\ResultSet\ResultSet
      */
     public function fetchAll()
     {
-    	if ($this->usePaginator === true) {
+        if ($this->usePaginator === true) {
             return $this->initPaginator($this->tableGateway->getSql()->select());
         }
         $this->result =  $this->tableGateway->select();
@@ -157,9 +157,9 @@ abstract class AbstractMapper implements ServiceLocatorAwareInterface
 
     /**
      * Delete request
-     * 
+     *
      * @param \Zend\Db\Sql\Delete
-     * 
+     *
      * @return integer
      */
     public function deleteWith(\Zend\Db\Sql\Delete $delete)
@@ -169,9 +169,9 @@ abstract class AbstractMapper implements ServiceLocatorAwareInterface
 
     /**
      * Insert request
-     * 
-     * @param \Zend\Db\Sql\Insert   
-     *   
+     *
+     * @param \Zend\Db\Sql\Insert
+     *
      * @return integer
      */
     public function insertWith(\Zend\Db\Sql\Insert $insert)
@@ -181,9 +181,9 @@ abstract class AbstractMapper implements ServiceLocatorAwareInterface
 
     /**
      * Update request
-     * 
+     *
      * @param \Zend\Db\Sql\Update
-     * 
+     *
      * @return integer
      */
     public function updateWith(\Zend\Db\Sql\Update $update)
@@ -193,24 +193,24 @@ abstract class AbstractMapper implements ServiceLocatorAwareInterface
 
     /**
      * Get row
-     * 
-     * @param string $column
+     *
+     * @param string    $column
      * @param multitype $value
-     * 
+     *
      * @return \Dal\Model\AbstractModel
      */
     public function fetchRow($column, $value)
     {
         $where = array($column, $value);
-        
+
         return $this->tableGateway->select($where)->current();
     }
 
     /**
      * Insert a new modele
-     * 
-     * @param  \Dal\Model\AbstractModel $model
-     * 
+     *
+     * @param \Dal\Model\AbstractModel $model
+     *
      * @return integer
      */
     public function insert(AbstractModel $model)
@@ -220,7 +220,7 @@ abstract class AbstractMapper implements ServiceLocatorAwareInterface
 
     /**
      * Get Last insert value
-     * 
+     *
      * @return integer
      */
     public function getLastInsertValue()
@@ -230,32 +230,32 @@ abstract class AbstractMapper implements ServiceLocatorAwareInterface
 
     /**
      * Update a modele
-     * 
-     * @param  \Dal\Model\AbstractModel $model
-     * @param array $where
-     * 
+     *
+     * @param \Dal\Model\AbstractModel $model
+     * @param array                    $where
+     *
      * @return integer
      */
-    public function update(AbstractModel $model,$where = null)
+    public function update(AbstractModel $model, $where = null)
     {
         $datas = $model->toArrayCurrent();
 
         if ($where === null) {
-             foreach ($this->tableGateway->getPrimaryKey() as $key) {
+            foreach ($this->tableGateway->getPrimaryKey() as $key) {
                 $where[$key] = $datas[$key];
                 unset($datas[$key]);
             }
         }
 
         return (count($datas) > 0) ?
-            $this->tableGateway->update($datas,$where) : false;
+            $this->tableGateway->update($datas, $where) : false;
     }
 
     /**
      * Delete full modele
      *
-     * @param  \Dal\Model\AbstractModel $model
-     * 
+     * @param \Dal\Model\AbstractModel $model
+     *
      * @return boolean
      */
     public function delete(AbstractModel $model)
@@ -272,14 +272,14 @@ abstract class AbstractMapper implements ServiceLocatorAwareInterface
     /**
      * Set the mapper options and enable the mapper
      *
-     * @param  array $options
-     * 
+     * @param array $options
+     *
      * @return AbstractMapper
      */
     public function usePaginator(array $options = array())
     {
         $this->usePaginator = true;
-        
+
         $this->paginatorOptions['n'] = (isset($options['n'])) ? $options['n'] : 10;
         $this->paginatorOptions['p'] = (isset($options['p'])) ? $options['p'] : 1;
 
@@ -289,28 +289,28 @@ abstract class AbstractMapper implements ServiceLocatorAwareInterface
     /**
      * Init the paginator with a select array
      *
-     * @param  array $select
-     * 
+     * @param array $select
+     *
      * @return string
      */
     protected function initPaginatorPDO(array $select)
     {
-    	$this->usePaginator = false;
-    	$this->paginator = $select;
+        $this->usePaginator = false;
+        $this->paginator = $select;
 
-    	return sprintf('%s LIMIT %s OFFSET %s',$select[0],$this->paginatorOptions['n'],(($this->paginatorOptions['p']-1)*$this->paginatorOptions['n']));
+        return sprintf('%s LIMIT %s OFFSET %s', $select[0], $this->paginatorOptions['n'], (($this->paginatorOptions['p']-1)*$this->paginatorOptions['n']));
     }
-    
+
     /**
      * Init the paginator with a select object
-     * 
-     * @param  \Zend\Db\Sql\Select $select
-     * 
+     *
+     * @param \Zend\Db\Sql\Select $select
+     *
      * @return Paginator
      */
     protected function initPaginator(\Zend\Db\Sql\Select $select)
     {
-    	$this->usePaginator = false;
+        $this->usePaginator = false;
         $this->paginator = new Paginator(new DbSelect(
                 $select,
                 $this->tableGateway->getAdapter(),
@@ -318,7 +318,7 @@ abstract class AbstractMapper implements ServiceLocatorAwareInterface
         ));
 
         $this->paginator->setItemCountPerPage($this->paginatorOptions['n']);
-        
+
         return ($this->paginator->count() < $this->paginatorOptions['p']) ? (new \Dal\Db\ResultSet\ResultSet())->initialize(array()) : $this->paginator->getItemsByPage($this->paginatorOptions['p']);
     }
 
@@ -329,23 +329,23 @@ abstract class AbstractMapper implements ServiceLocatorAwareInterface
     public function count()
     {
         $count = null;
-        
-        if ($this->paginator === null ) {
-        	$count = $this->result->count();
+
+        if ($this->paginator === null) {
+            $count = $this->result->count();
         } elseif ($this->paginator instanceof \Zend\Paginator\Paginator) {
             $count = $this->paginator->getTotalItemCount();
         } elseif (is_array($this->paginator)) {
-            $count = $this->tableGateway->getAdapter()->query(sprintf('SELECT count(1) as `count` FROM ( %s ) C',$this->paginator[0]))->execute($this->paginator[1])->current()['count'];
+            $count = $this->tableGateway->getAdapter()->query(sprintf('SELECT count(1) as `count` FROM ( %s ) C', $this->paginator[0]))->execute($this->paginator[1])->current()['count'];
         }
 
         return $count;
     }
 
     /**
-     * Return request sql 
-     * 
+     * Return request sql
+     *
      * @param \Zend\Db\Sql\SqlInterface $request
-     * 
+     *
      * @return string
      */
     public function printSql(\Zend\Db\Sql\SqlInterface $request)

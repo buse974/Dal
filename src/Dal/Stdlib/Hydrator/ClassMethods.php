@@ -2,7 +2,7 @@
 
 namespace Dal\Stdlib\Hydrator;
 
-class ClassMethods 
+class ClassMethods
 {
     public function extract($object)
     {
@@ -10,8 +10,8 @@ class ClassMethods
         $methods = get_class_methods($object);
 
         foreach ($methods as $method) {
-            if (strpos($method,'get')===0) {
-                $attribute = substr(str_replace(array('A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'), array('_a','_b','_c','_d','_e','_f','_g','_h','_i','_j','_k','_l','_m','_n','_o','_p','_q','_r','_s','_t','_u','_v','_w','_x','_y','_z'), $method),4);
+            if (strpos($method, 'get') === 0) {
+                $attribute = substr(str_replace(array('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'), array('_a', '_b', '_c', '_d', '_e', '_f', '_g', '_h', '_i', '_j', '_k', '_l', '_m', '_n', '_o', '_p', '_q', '_r', '_s', '_t', '_u', '_v', '_w', '_x', '_y', '_z'), $method), 4);
                 $attributes[$attribute] = $object->$method();
             }
         }
@@ -32,12 +32,12 @@ class ClassMethods
     public function hydrate(array &$data, $object, $unset = false)
     {
         foreach ($data as $property => $value) {
-            $method = str_replace(array('_a','_b','_c','_d','_e','_f','_g','_h','_i','_j','_k','_l','_m','_n','_o','_p','_q','_r','_s','_t','_u','_v','_w','_x','_y','_z'),array('A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'), 'set_' . $property);
+            $method = str_replace(array('_a', '_b', '_c', '_d', '_e', '_f', '_g', '_h', '_i', '_j', '_k', '_l', '_m', '_n', '_o', '_p', '_q', '_r', '_s', '_t', '_u', '_v', '_w', '_x', '_y', '_z'), array('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'), 'set_'.$property);
 
             if (is_callable(array($object, $method))) {
                 $object->$method($value);
                 if ($unset === true) {
-                	unset($data[$property]);
+                    unset($data[$property]);
                 }
             }
         }
