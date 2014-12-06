@@ -20,12 +20,12 @@ class ServiceAbstractFactory extends AbstractFactory
         $namespace = $this->getConfig($serviceLocator)['namespace'][$prefix];
         $name = substr($requestedName, strlen($prefix) + 9);
 
-        $class = $namespace['service'].'\\'.$this->toCamelCase($name);
+        $class = sprintf('%s\\%s', $namespace['service'], $this->toCamelCase($name));
 
         if (!class_exists($class)) {
             throw new \Exception('class does not exist : '.$class);
         }
 
-        return new $class($prefix.'_mapper_'.$name);
+        return new $class(array('prefix' => $prefix, 'name' => $name));
     }
 }
