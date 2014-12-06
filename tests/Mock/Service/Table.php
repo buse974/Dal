@@ -2,6 +2,8 @@
 
 namespace Mock\Service;
 
-class Table
+use Dal\Service\AbstractService;
+
+class Table extends AbstractService
 {
 }

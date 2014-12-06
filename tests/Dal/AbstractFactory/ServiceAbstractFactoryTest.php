@@ -24,12 +24,21 @@ class ServiceAbstractFactoryTest extends AbstractHttpControllerTestCase
         $this->assertTrue($out);
     }
 
-    public function createServiceWithName()
+    public function testCreateServiceWithName()
     {
         $service_abstract_factory = new ServiceAbstractFactory();
         $serviceManager = $this->getApplicationServiceLocator();
-        $out = $service_abstract_factory->createServiceWithName($serviceManager, 'dal-test_model_table', 'dal-test_model_table');
+        $out = $service_abstract_factory->createServiceWithName($serviceManager, 'dal-test_service_table', 'dal-test_service_table');
 
+        $reflexionClass = new \ReflectionClass($out);
+        $mapper = $reflexionClass->getProperty('mapper');
+        $mapper->setAccessible(true);
+        
+        $model = $reflexionClass->getProperty('model');
+        $model->setAccessible(true);
+        
+        $this->assertEquals('dal-test_mapper_table', $mapper->getValue($out));
+        $this->assertEquals('dal-test_model_table', $model->getValue($out));
         $this->assertInstanceOf('Mock\Service\Table', $out);
     }
 }
