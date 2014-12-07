@@ -39,7 +39,7 @@ abstract class AbstractService implements ServiceLocatorAwareInterface
      */
     public function getModel()
     {
-    	return $this->getServiceLocator()->get($this->model);
+    	return clone $this->getServiceLocator()->get($this->model);
     }
 
     public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
