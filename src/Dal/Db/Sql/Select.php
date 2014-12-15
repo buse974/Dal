@@ -31,7 +31,7 @@ class Select extends BaseSelect
     {
         $columns = $this->aliasing($columns, $this->table);
 
-        return parent::columns($columns, $prefixColumnsWithTable);
+        return parent::columns($columns, $prefixColumnsWithTable); // @codeCoverageIgnore
     }
 
     public function join($name, $on, $columns = self::SQL_STAR, $type = self::JOIN_INNER)
@@ -40,7 +40,7 @@ class Select extends BaseSelect
             $columns = array($columns);
         }
         $columns = $this->aliasing($columns, $name);
-
-        return parent::join($name, $on, $columns, $type);
+        
+        return parent::join($name, $on, $columns, $type); // @codeCoverageIgnore
     }
 }

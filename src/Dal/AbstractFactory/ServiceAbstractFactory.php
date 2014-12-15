@@ -23,7 +23,7 @@ class ServiceAbstractFactory extends AbstractFactory
         $class = sprintf('%s\\%s', $namespace['service'], $this->toCamelCase($name));
 
         if (!class_exists($class)) {
-            throw new \Exception('class does not exist : '.$class);
+            throw new \Exception('Class does not exist : '.$class);
         }
 
         return new $class(array('prefix' => $prefix, 'name' => $name));
