@@ -17,13 +17,34 @@ class AbstractFactoryTest extends AbstractHttpControllerTestCase
     public function testGetConfig()
     {
         $serviceManager = $this->getApplicationServiceLocator();
-        $m_abs = $this->getMockForAbstractClass('Dal\AbstractFactory\AbstractFactory');
+        $m_abs = $this->getMockBuilder('Dal\AbstractFactory\AbstractFactory')
+        			  ->setMethods(array('createServiceWithName', 'canCreateServiceWithName'))
+                      ->getMock();
         $out = $m_abs->getConfig($serviceManager);
 
         $this->assertArrayHasKey('adapter', $out);
         $this->assertEquals('adapter', $out['adapter']);
         $this->assertArrayHasKey('namespace', $out);
         $this->assertTrue(is_array($out['namespace']));
+    }
+    
+    public function testNotGetConfig()
+    {
+    	$serviceManage = $this->getMockBuilder('Zend\ServiceManager\ServiceLocatorInterface')
+    	                       ->setMethods(array('has','get'))
+    	                       ->disableOriginalConstructor()
+    	                       ->getMock();
+    	
+    	$serviceManage->expects($this->once())
+    	               ->method('has')
+    	               ->with('Config')
+    	               ->will($this->returnValue(false));
+    	
+    	$m_abs = $this->getMockBuilder('Dal\AbstractFactory\AbstractFactory')
+    	              ->setMethods(array('createServiceWithName', 'canCreateServiceWithName'))
+    	              ->getMock();
+    	
+    	$this->assertEquals(false, $m_abs->getConfig($serviceManage));
     }
 
     public function testToCamelCase()

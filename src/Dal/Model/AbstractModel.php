@@ -92,8 +92,6 @@ abstract class AbstractModel implements JsonSerializable, ServiceLocatorAwareInt
                 } else {
                     unset($vars[$key]);
                 }
-            } elseif (is_array($value)) {
-                $vars[$key] = $value;
             } elseif (is_bool($value)) {
                 $vars[$key] = (int) $value;
             }

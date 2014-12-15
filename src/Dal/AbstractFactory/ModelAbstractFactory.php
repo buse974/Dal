@@ -39,7 +39,7 @@ class ModelAbstractFactory extends AbstractFactory
         $class = $namespace['model'].'\\'.$name_table;
 
         if (!class_exists($class)) {
-            throw new \Exception("Not exist : ".$namespace['model']."\\".$name_table."\n");
+            throw new \Exception('Not exist : '.$namespace['model'].'\\'.$name_table);
         }
 
         return new $class();
