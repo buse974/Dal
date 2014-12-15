@@ -36,7 +36,7 @@ class ModelAbstractFactoryTest extends AbstractHttpControllerTestCase
     public function testCreateServiceWithNameEception()
     {
     	$this->setExpectedException(
-    			'Exception', 'Not exist : Mock\Model\TableNoExist'
+    			'Exception', 'Class does not exist : Mock\Model\TableNoExist'
     	);
     	
     	$model_abstract_factory = new ModelAbstractFactory();
@@ -44,18 +44,5 @@ class ModelAbstractFactoryTest extends AbstractHttpControllerTestCase
     	$out = $model_abstract_factory->createServiceWithName($serviceManager, 'dal-test_model_table_no_exist', 'dal-test_model_table_no_exist');
     	
     	$this->assertInstanceOf('Mock\Model\Table', $out);
-    	
-    	
-    /*	$prefix = current(explode('_', $requestedName));
-    	$namespace = $this->getConfig($serviceLocator)['namespace'][$prefix];
-    	$name_table = $this->toCamelCase(substr($requestedName, strlen($prefix) + 7));
-    
-    	$class = $namespace['model'].'\\'.$name_table;
-    
-    	if (!class_exists($class)) {
-    		throw new \Exception("Not exist : ".$namespace['model']."\\".$name_table."\n");
-    	}
-    
-    	return new $class();*/
     }
 }

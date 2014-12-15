@@ -41,4 +41,17 @@ class ServiceAbstractFactoryTest extends AbstractHttpControllerTestCase
         $this->assertEquals('dal-test_model_table', $model->getValue($out));
         $this->assertInstanceOf('Mock\Service\Table', $out);
     }
+    
+    public function testCreateServiceWithNameEception()
+    {
+    	$this->setExpectedException(
+    			'Exception', 'Class does not exist : Mock\Service\TableNoExist'
+    	);
+    	 
+    	$model_abstract_factory = new ServiceAbstractFactory();
+    	$serviceManager = $this->getApplicationServiceLocator();
+    	$out = $model_abstract_factory->createServiceWithName($serviceManager, 'dal-test_service_table_no_exist', 'dal-test_service_table_no_exist');
+    	 
+    	$this->assertInstanceOf('Mock\Model\Table', $out);
+    }
 }

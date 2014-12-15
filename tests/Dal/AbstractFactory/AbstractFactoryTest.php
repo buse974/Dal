@@ -20,6 +20,7 @@ class AbstractFactoryTest extends AbstractHttpControllerTestCase
         $m_abs = $this->getMockBuilder('Dal\AbstractFactory\AbstractFactory')
         			  ->setMethods(array('createServiceWithName', 'canCreateServiceWithName'))
                       ->getMock();
+        
         $out = $m_abs->getConfig($serviceManager);
 
         $this->assertArrayHasKey('adapter', $out);
@@ -31,14 +32,14 @@ class AbstractFactoryTest extends AbstractHttpControllerTestCase
     public function testNotGetConfig()
     {
     	$serviceManage = $this->getMockBuilder('Zend\ServiceManager\ServiceLocatorInterface')
-    	                       ->setMethods(array('has','get'))
-    	                       ->disableOriginalConstructor()
-    	                       ->getMock();
+    	                      ->setMethods(array('has','get'))
+    	                      ->disableOriginalConstructor()
+    	                      ->getMock();
     	
     	$serviceManage->expects($this->once())
-    	               ->method('has')
-    	               ->with('Config')
-    	               ->will($this->returnValue(false));
+    	              ->method('has')
+    	              ->with('Config')
+    	              ->will($this->returnValue(false));
     	
     	$m_abs = $this->getMockBuilder('Dal\AbstractFactory\AbstractFactory')
     	              ->setMethods(array('createServiceWithName', 'canCreateServiceWithName'))
