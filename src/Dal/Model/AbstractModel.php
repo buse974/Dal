@@ -48,6 +48,8 @@ abstract class AbstractModel implements JsonSerializable, ServiceLocatorAwareInt
         }
         $formatted = array();
 
+        
+        
         if ($this->prefix !== null) {
             foreach ($data as $key => $value) {
                 if (0 === strpos($key, $this->allParent().$this->delimiter)) {

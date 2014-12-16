@@ -72,7 +72,7 @@ class TableGateway extends BaseTableGateway
     public function getPrimaryKey()
     {
         if (null === $this->primary) {
-            $metadata = new Metadata($this->adapter);
+            $metadata = $this->getMetadata();
             $constraints = $metadata->getConstraints($this->getTable());
 
             foreach ($constraints as $constraint) {
@@ -83,5 +83,10 @@ class TableGateway extends BaseTableGateway
         }
 
         return $this->primary;
+    }
+    
+    protected function getMetadata()
+    {
+    	return new Metadata($this->adapter);
     }
 }

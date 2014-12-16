@@ -306,7 +306,7 @@ abstract class AbstractMapper implements ServiceLocatorAwareInterface
      *
      * @param \Zend\Db\Sql\Select $select
      *
-     * @return Paginator
+     * @return mixed
      */
     protected function initPaginator(\Zend\Db\Sql\Select $select)
     {
@@ -319,7 +319,11 @@ abstract class AbstractMapper implements ServiceLocatorAwareInterface
 
         $this->paginator->setItemCountPerPage($this->paginatorOptions['n']);
 
-        return ($this->paginator->count() < $this->paginatorOptions['p']) ? (new \Dal\Db\ResultSet\ResultSet())->initialize(array()) : $this->paginator->getItemsByPage($this->paginatorOptions['p']);
+        if($this->paginator->count() < $this->paginatorOptions['p']) {
+        	return (new ResultSet())->initialize(array());
+        } else {
+        	return $this->paginator->getItemsByPage($this->paginatorOptions['p']);
+        }
     }
 
     /**
