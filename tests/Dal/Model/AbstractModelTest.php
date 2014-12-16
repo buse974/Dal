@@ -59,13 +59,13 @@ class AbstractModelTest extends PHPUnit_Framework_TestCase
         $mock_model->expects($this->any())->method('setToto')->with($this->equalTo('vtoto'))->will($this->returnSelf());
         $mock_model->expects($this->any())->method('setTata')->with($this->equalTo('vtata'))->will($this->returnSelf());
 
-        $datas = array('parent_prefix_unprefix$toto' => 'vtoto', 'parent_prefix_unprefix$tata' => 'vtata', 'parent_prefix$toto' => 'vtotop', 'parent_prefix$tata' => 'vtatap');
+        $datas = array('parent_prefix_unprefix$toto' => 'vtoto', 'parent_prefix_unprefix$tata' => 'vtata', 'parent_prefix$toto' => 'vtotop', 'unprefix$tata' => 'vtata');
 
         $this->assertEquals($mock_model->exchangeArray($datas), $mock_model);
         $this->assertEquals($mock_model_parent->exchangeArray($datas), $mock_model_parent);
         $this->assertEmpty($datas);
     }
-
+    
     public function testAllParent()
     {
         $mock_model_parent = $this->getMockForAbstractClass('\Dal\Model\AbstractModel', array(null, 'parent_prefix'), 'parentModel', true, true, true);
