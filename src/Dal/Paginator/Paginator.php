@@ -62,6 +62,12 @@ class Paginator
 	protected $c;
 	
 	/**
+	 * 
+	 * @var ResultSet
+	 */
+	protected $result;
+	
+	/**
 	 * @var ResultSet
 	 */
 	protected $resultSetPrototype = null;
@@ -97,7 +103,9 @@ class Paginator
 		$result    = $statement->execute((is_array($this->select)) ? $this->select[1]:null);
 		$resultSet = clone $this->resultSetPrototype;
 		
-		return $resultSet->initialize($result);
+		$this->result = $resultSet->initialize($result);
+		
+		return $this->result;
 	}
 	
 	public function getStatementDay()
@@ -126,7 +134,6 @@ class Paginator
 		 
 		return $statement;
 	}
-	
 	
 	public function getStatementPagination() 
 	{

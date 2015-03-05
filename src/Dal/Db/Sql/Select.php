@@ -10,6 +10,10 @@ class Select extends BaseSelect
 
     protected function aliasing(array $columns, $prefix)
     {
+    	if(empty($prefix)) {
+    		return $columns;
+    	}
+    	
         if (is_array($prefix)) {
             $prefix = key($prefix);
         }
