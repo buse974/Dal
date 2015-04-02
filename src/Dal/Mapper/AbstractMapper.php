@@ -5,16 +5,15 @@ namespace Dal\Mapper;
 use Dal\Db\Sql\Select;
 use Dal\Db\TableGateway\TableGateway;
 use Zend\Paginator\Adapter\DbSelect;
-use Zend\Paginator\Paginator;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Dal\Model\AbstractModel;
 use Dal\Db\ResultSet\ResultSet;
+use Dal\Paginator\Paginator;
 
 abstract class AbstractMapper implements ServiceLocatorAwareInterface
 {
     /**
-     *
      * @var \Dal\Db\TableGateway\TableGateway
      */
     protected $tableGateway;
@@ -62,9 +61,7 @@ abstract class AbstractMapper implements ServiceLocatorAwareInterface
             if ($order) {
                 $sl->order($order);
             }
-            $paginator = $this->initPaginator($sl);
-
-            return $paginator;
+            return  $this->initPaginator($sl);
         }
 
         $this->result = $this->tableGateway->select($model->toArrayCurrent());
@@ -98,7 +95,7 @@ abstract class AbstractMapper implements ServiceLocatorAwareInterface
     public function selectPdo($select, $param = null)
     {
         if ($this->usePaginator === true) {
-            $select = $this->initPaginatorPDO(array($select, $param));
+            return $this->initPaginator(array($select, $param));
         }
         $this->result = $this->tableGateway->selectPdo($select, $param);
 
@@ -116,10 +113,11 @@ abstract class AbstractMapper implements ServiceLocatorAwareInterface
     public function selectNMPdo($select, $param = null)
     {
         if ($this->usePaginator === true) {
-            $select = $this->initPaginatorPDO(array($select, $param));
+            return $this->initPaginator(array($select, $param));
         }
         $this->result = $this->tableGateway->selectNMPdo($select, $param);
 
+        
         return $this->result;
     }
 
@@ -280,6 +278,9 @@ abstract class AbstractMapper implements ServiceLocatorAwareInterface
     {
         $this->usePaginator = true;
 
+        $this->paginatorOptions['s'] = (isset($options['s'])) ? $options['s'] : null;
+        $this->paginatorOptions['d'] = (isset($options['d'])) ? $options['d'] : null;
+        $this->paginatorOptions['c'] = (isset($options['c'])) ? $options['c'] : null;
         $this->paginatorOptions['n'] = (isset($options['n'])) ? $options['n'] : 10;
         $this->paginatorOptions['p'] = (isset($options['p'])) ? $options['p'] : 1;
 
@@ -287,43 +288,38 @@ abstract class AbstractMapper implements ServiceLocatorAwareInterface
     }
 
     /**
-     * Init the paginator with a select array
-     *
-     * @param array $select
-     *
-     * @return string
-     */
-    protected function initPaginatorPDO(array $select)
-    {
-        $this->usePaginator = false;
-        $this->paginator = $select;
-
-        return sprintf('%s LIMIT %s OFFSET %s', $select[0], $this->paginatorOptions['n'], (($this->paginatorOptions['p']-1)*$this->paginatorOptions['n']));
-    }
-
-    /**
      * Init the paginator with a select object
      *
-     * @param \Zend\Db\Sql\Select $select
+     * @param \Zend\Db\Sql\Select|array $select
      *
      * @return mixed
      */
-    protected function initPaginator(\Zend\Db\Sql\Select $select)
+    protected function initPaginator($select)
     {
         $this->usePaginator = false;
-        $this->paginator = new Paginator(new DbSelect(
-                $select,
-                $this->tableGateway->getAdapter(),
-                $this->tableGateway->getResultSetPrototype()
-        ));
-
-        $this->paginator->setItemCountPerPage($this->paginatorOptions['n']);
-
-        if($this->paginator->count() < $this->paginatorOptions['p']) {
-        	return (new ResultSet())->initialize(array());
-        } else {
-        	return $this->paginator->getItemsByPage($this->paginatorOptions['p']);
+        
+        $this->paginator = new Paginator(
+        			$select,
+        			$this->tableGateway->getAdapter(), 
+        			$this->tableGateway->getResultSetPrototype());
+        
+        if(isset($this->paginatorOptions['n'])) {
+        	$this->paginator->setN($this->paginatorOptions['n']);
         }
+        if(isset($this->paginatorOptions['p'])) {
+        	$this->paginator->setP($this->paginatorOptions['p']);
+        }
+        if(isset($this->paginatorOptions['c'])) {
+        	$this->paginator->setC($this->paginatorOptions['c']);
+        }
+        if(isset($this->paginatorOptions['s'])) {
+        	$this->paginator->setS($this->paginatorOptions['s']);
+        }
+        if(isset($this->paginatorOptions['d'])) {
+        	$this->paginator->setD($this->paginatorOptions['d']);
+    	}
+        
+        return $this->paginator->getItems();
     }
 
     /**
@@ -332,16 +328,12 @@ abstract class AbstractMapper implements ServiceLocatorAwareInterface
      */
     public function count()
     {
-        $count = null;
-
         if ($this->paginator === null) {
             $count = $this->result->count();
-        } elseif ($this->paginator instanceof \Zend\Paginator\Paginator) {
+        } elseif ($this->paginator instanceof Paginator) {
             $count = $this->paginator->getTotalItemCount();
-        } elseif (is_array($this->paginator)) {
-            $count = $this->tableGateway->getAdapter()->query(sprintf('SELECT count(1) as `count` FROM ( %s ) C', $this->paginator[0]))->execute($this->paginator[1])->current()['count'];
-        }
-
+        } 
+        
         return $count;
     }
 
