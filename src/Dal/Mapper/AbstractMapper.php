@@ -274,14 +274,19 @@ abstract class AbstractMapper implements ServiceLocatorAwareInterface
      *
      * @return AbstractMapper
      */
-    public function usePaginator(array $options = array())
+    public function usePaginator($options = array())
     {
+        if($options===null) {
+            return $this;
+        }
+        
         $this->usePaginator = true;
 
         $this->paginatorOptions['s'] = (isset($options['s'])) ? $options['s'] : null;
         $this->paginatorOptions['d'] = (isset($options['d'])) ? $options['d'] : null;
         $this->paginatorOptions['c'] = (isset($options['c'])) ? $options['c'] : null;
         $this->paginatorOptions['n'] = (isset($options['n'])) ? $options['n'] : 10;
+        $this->paginatorOptions['o'] = (isset($options['o'])) ? $options['o'] : 'DESC';
         $this->paginatorOptions['p'] = (isset($options['p'])) ? $options['p'] : 1;
 
         return $this;
@@ -317,6 +322,9 @@ abstract class AbstractMapper implements ServiceLocatorAwareInterface
         }
         if(isset($this->paginatorOptions['d'])) {
         	$this->paginator->setD($this->paginatorOptions['d']);
+    	}
+    	if(isset($this->paginatorOptions['o'])) {
+    	    $this->paginator->setO($this->paginatorOptions['o']);
     	}
         
         return $this->paginator->getItems();

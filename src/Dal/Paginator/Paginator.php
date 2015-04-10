@@ -62,6 +62,12 @@ class Paginator
 	protected $c;
 	
 	/**
+	 *
+	 * @var string
+	 */
+	protected $o;
+	
+	/**
 	 * 
 	 * @var ResultSet
 	 */
@@ -140,12 +146,14 @@ class Paginator
 		if(null === $this->n) {
 			$this->n=10;
 		}
+		$o = ($this->o === 'ASC') ? '>' : '<';
 		
 		if(is_array($this->select)) {
 			$query = $this->select[0];
 			if($this->s !== null && $this->c != null) {
 				// @TODO check choise AND or WHERE and insertion before ORDER LIMIT GROUPBY
-				$query = sprintf('%s AND %s < %s', $query, $this->c, $this->s);
+				
+				$query = sprintf('%s AND %s %s %s', $query, $this->c, $o, $this->s);
 			}
 			$query = sprintf('%s LIMIT %s OFFSET %s', $query, $this->n, (($this->p-1)*$this->n));
 			$statement = $this->sql->getAdapter()->query($query, ADT::QUERY_MODE_PREPARE);
@@ -155,7 +163,7 @@ class Paginator
 			$select->limit($this->n);
 			
 			if($this->s !== null && $this->c != null) {
-				$select->where(array($this->c . ' < ?' => $this->s));
+				$select->where(array($this->c . ' ' . $o . ' ?' => $this->s));
 			}
 
 			$statement = $this->sql->prepareStatementForSqlObject($select);
@@ -233,6 +241,13 @@ class Paginator
     	$this->c = $c;
     	 
     	return $this;
+    }
+    
+    public function setO($o)
+    {
+        $this->o = $o;
+    
+        return $this;
     }
 }
  
