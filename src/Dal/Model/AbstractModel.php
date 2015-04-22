@@ -136,6 +136,10 @@ abstract class AbstractModel implements JsonSerializable, ServiceLocatorAwareInt
              array_merge($this->parent_model->getParentArray(), array($this->prefix)) : array($this->prefix);
     }
 
+    /**
+     * Return true if relation is boucle infinie
+     * @return boolean
+     */
     protected function isRepeatRelational()
     {
         $is_repeat = false;

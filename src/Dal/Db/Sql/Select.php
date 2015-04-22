@@ -11,7 +11,7 @@ class Select extends BaseSelect
     protected function aliasing(array $columns, $prefix)
     {
     	if(empty($prefix)) {
-    		return $columns;
+            return $columns;
     	}
     	
         if (is_array($prefix)) {
