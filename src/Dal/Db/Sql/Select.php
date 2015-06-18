@@ -24,7 +24,12 @@ class Select extends BaseSelect
                     continue;
                 }
                 unset($columns[$key]);
-                $columns[$prefix.'$'.$column] = $column;
+                
+                if(!is_numeric($key)) {
+                	$columns[$key] = $column;
+                }else {
+                	$columns[$prefix.'$'.$column] = $column;
+                }
             }
         }
 
