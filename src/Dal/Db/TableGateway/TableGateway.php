@@ -13,6 +13,7 @@ use Zend\Db\TableGateway\TableGateway as BaseTableGateway;
 use Zend\Db\Adapter\Adapter as ADT;
 use Zend\Db\Metadata\Metadata;
 use Dal\Db\ResultSet\ResultSet;
+use Dal\Db\Sql\Select;
 
 class TableGateway extends BaseTableGateway
 {
@@ -64,6 +65,25 @@ class TableGateway extends BaseTableGateway
         $resultSet = new ResultSet();
 
         return $resultSet->initialize($result);
+    }
+    
+
+    /**
+     * 
+     * @param Select $select
+     * @return \Zend\Db\TableGateway\ResultSetInterface
+     */
+    public function selectBridge(Select $select)
+    {
+    	// prepare and execute
+    	$statement = $this->sql->prepareStatementForSqlObject($select);
+    	$result = $statement->execute();
+    	
+    	// build result set
+    	$resultSet = clone $this->resultSetPrototype;
+    	$resultSet->initialize($result);
+
+    	return $resultSet;
     }
 
     /**
