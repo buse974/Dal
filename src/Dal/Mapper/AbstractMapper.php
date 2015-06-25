@@ -92,6 +92,25 @@ abstract class AbstractMapper implements ServiceLocatorAwareInterface
      *
      * @return \Dal\Db\ResultSet\ResultSet
      */
+    public function selectBridge(Select $select)
+    {
+    	if ($this->usePaginator === true) {
+    		return $this->initPaginator(array($select, $param));
+    	}
+    	
+    	$this->result = $this->tableGateway->selectBridge($select);
+    
+    	return $this->result;
+    }
+    
+    /**
+     * Excecute select directly by PDO
+     *
+     * @param string $select
+     * @param array  $param
+     *
+     * @return \Dal\Db\ResultSet\ResultSet
+     */
     public function selectPdo($select, $param = null)
     {
         if ($this->usePaginator === true) {
