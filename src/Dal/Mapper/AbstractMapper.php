@@ -95,7 +95,7 @@ abstract class AbstractMapper implements ServiceLocatorAwareInterface
     public function selectBridge(Select $select)
     {
     	if ($this->usePaginator === true) {
-    		return $this->initPaginator(array($select, $param));
+    		return $this->initPaginator($select);
     	}
     	
     	$this->result = $this->tableGateway->selectBridge($select);
