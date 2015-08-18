@@ -108,8 +108,15 @@ abstract class AbstractModel implements JsonSerializable, ServiceLocatorAwareInt
         $vars = $hydrator->extract($this);
 
         foreach ($vars as $key => &$value) {
-            if ($value === null || (is_object($value) && !$value instanceof IsNull) || is_array($value)) {
+            if ($value === null || (is_object($value) && !$value instanceof IsNull)) {
                 unset($vars[$key]);
+            } elseif (is_array($value)) {
+                foreach ($value as $v) {
+                    if(is_object($v)) {
+                        unset($vars[$key]);
+                        break;
+                    }
+                }
             } elseif (is_object($value) && $value instanceof IsNull) {
                 $vars[$key] = null;
             } elseif (is_bool($value)) {

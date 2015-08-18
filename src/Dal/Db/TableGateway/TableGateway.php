@@ -19,6 +19,32 @@ class TableGateway extends BaseTableGateway
 {
     protected $primary;
 
+    /**
+     * Select
+     *
+     * @param Where|\Closure|string|array $where
+     * @return ResultSet
+     */
+    public function select($where = null, $order = null)
+    {
+        if (!$this->isInitialized) {
+            $this->initialize();
+        }
+    
+        $select = $this->sql->select();
+        
+        if ($where instanceof \Closure) {
+            $where($select);
+        } elseif ($where !== null) {
+            $select->where($where);
+        }
+        if($order !== null) {
+            $select->order($order);
+        }
+    
+        return $this->selectWith($select);
+    }
+    
    /**
     *
     * @param  string                      $sql

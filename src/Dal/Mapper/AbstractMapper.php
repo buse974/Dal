@@ -64,7 +64,8 @@ abstract class AbstractMapper implements ServiceLocatorAwareInterface
             return  $this->initPaginator($sl);
         }
 
-        $this->result = $this->tableGateway->select($model->toArrayCurrent());
+        
+        $this->result = $this->tableGateway->select($model->toArrayCurrent(), $order);
 
         return $this->result;
     }
