@@ -18,9 +18,9 @@ class AbstractFactoryTest extends AbstractHttpControllerTestCase
     {
         $serviceManager = $this->getApplicationServiceLocator();
         $m_abs = $this->getMockBuilder('Dal\AbstractFactory\AbstractFactory')
-        			  ->setMethods(array('createServiceWithName', 'canCreateServiceWithName'))
+                      ->setMethods(array('createServiceWithName', 'canCreateServiceWithName'))
                       ->getMock();
-        
+
         $out = $m_abs->getConfig($serviceManager);
 
         $this->assertArrayHasKey('adapter', $out);
@@ -28,24 +28,24 @@ class AbstractFactoryTest extends AbstractHttpControllerTestCase
         $this->assertArrayHasKey('namespace', $out);
         $this->assertTrue(is_array($out['namespace']));
     }
-    
+
     public function testNotGetConfig()
     {
-    	$serviceManage = $this->getMockBuilder('Zend\ServiceManager\ServiceLocatorInterface')
-    	                      ->setMethods(array('has','get'))
-    	                      ->disableOriginalConstructor()
-    	                      ->getMock();
-    	
-    	$serviceManage->expects($this->once())
-    	              ->method('has')
-    	              ->with('Config')
-    	              ->will($this->returnValue(false));
-    	
-    	$m_abs = $this->getMockBuilder('Dal\AbstractFactory\AbstractFactory')
-    	              ->setMethods(array('createServiceWithName', 'canCreateServiceWithName'))
-    	              ->getMock();
-    	
-    	$this->assertEquals(false, $m_abs->getConfig($serviceManage));
+        $serviceManage = $this->getMockBuilder('Zend\ServiceManager\ServiceLocatorInterface')
+                              ->setMethods(array('has', 'get'))
+                              ->disableOriginalConstructor()
+                              ->getMock();
+
+        $serviceManage->expects($this->once())
+                      ->method('has')
+                      ->with('Config')
+                      ->will($this->returnValue(false));
+
+        $m_abs = $this->getMockBuilder('Dal\AbstractFactory\AbstractFactory')
+                      ->setMethods(array('createServiceWithName', 'canCreateServiceWithName'))
+                      ->getMock();
+
+        $this->assertEquals(false, $m_abs->getConfig($serviceManage));
     }
 
     public function testToCamelCase()

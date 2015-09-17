@@ -1,11 +1,12 @@
 <?php
+
 /**
- * Zend Framework (http://framework.zend.com/)
+ * Zend Framework (http://framework.zend.com/).
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
+ *
  * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Db
  */
 
 namespace Dal\Db\ResultSet;
@@ -19,7 +20,7 @@ class ResultSet extends BaseResultSet implements JsonSerializable
     protected $bufferArrayObjectPrototype = false;
 
     /**
-     * To Array by parent id
+     * To Array by parent id.
      *
      * @param string $chaine_parent
      * @param string $chaine_id
@@ -64,9 +65,10 @@ class ResultSet extends BaseResultSet implements JsonSerializable
     }
 
     /**
-     * Cast result set to array of arrays
+     * Cast result set to array of arrays.
      *
      * @return array
+     *
      * @throws Exception\RuntimeException if any row is not castable to an array
      */
     public function toArray(array $indices = array(), $unset_indice = false)
@@ -98,9 +100,10 @@ class ResultSet extends BaseResultSet implements JsonSerializable
     }
 
     /**
-     * Cast result set to array of arrays
+     * Cast result set to array of arrays.
      *
      * @return array
+     *
      * @throws Exception\RuntimeException if any row is not castable to an array
      */
     public function toArrayCurrent(array $indices = array(), $unset_indice = false)
@@ -147,7 +150,7 @@ class ResultSet extends BaseResultSet implements JsonSerializable
     }
 
     /**
-     * Iterator: get current item
+     * Iterator: get current item.
      *
      * @return array
      */
@@ -163,7 +166,8 @@ class ResultSet extends BaseResultSet implements JsonSerializable
     }
 
     /**
-     * (non-PHPdoc)
+     * (non-PHPdoc).
+     *
      * @see JsonSerializable::jsonSerialize()
      */
     public function jsonSerialize()

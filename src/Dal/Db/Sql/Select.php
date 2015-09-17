@@ -10,10 +10,10 @@ class Select extends BaseSelect
 
     protected function aliasing(array $columns, $prefix)
     {
-    	if(empty($prefix)) {
+        if (empty($prefix)) {
             return $columns;
-    	}
-    	
+        }
+
         if (is_array($prefix)) {
             $prefix = key($prefix);
         }
@@ -24,11 +24,11 @@ class Select extends BaseSelect
                     continue;
                 }
                 unset($columns[$key]);
-                
-                if(!is_numeric($key)) {
-                	$columns[$key] = $column;
-                }else {
-                	$columns[$prefix.'$'.$column] = $column;
+
+                if (!is_numeric($key)) {
+                    $columns[$key] = $column;
+                } else {
+                    $columns[$prefix.'$'.$column] = $column;
                 }
             }
         }
@@ -49,7 +49,7 @@ class Select extends BaseSelect
             $columns = array($columns);
         }
         $columns = $this->aliasing($columns, $name);
-        
+
         return parent::join($name, $on, $columns, $type); // @codeCoverageIgnore
     }
 }

@@ -29,7 +29,7 @@ class MapperAbstractFactory extends AbstractFactory
         $resultSetPrototype->bufferArrayObjectPrototype();
         $resultSetPrototype->setArrayObjectPrototype($serviceLocator->get($prefix.'_model_'.$name_table));
         $tableGateway = new TableGateway($name_table, $adapter, null, $resultSetPrototype, new Sql($adapter, $name_table));
-        $obj =  $namespace['mapper'].'\\'.$this->toCamelCase($name_table);
+        $obj = $namespace['mapper'].'\\'.$this->toCamelCase($name_table);
 
         return new $obj($tableGateway);
     }

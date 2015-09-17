@@ -9,8 +9,8 @@ error_reporting(E_ALL | E_STRICT);
 chdir(__DIR__);
 
 /**
- * Test bootstrap, for setting up autoloading
-*/
+ * Test bootstrap, for setting up autoloading.
+ */
 class bootstrap
 {
     protected static $serviceManager;
@@ -19,7 +19,7 @@ class bootstrap
     {
         session_start();
         $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
-        ini_set('date.timezone', "Europe/Paris");
+        ini_set('date.timezone', 'Europe/Paris');
         static::initAutoloader();
     }
 
@@ -31,8 +31,8 @@ class bootstrap
     protected static function initAutoloader()
     {
         $vendorPath = static::findParentPath('vendor');
-        
-        $loader = include $vendorPath.'/autoload.php'; 
+
+        $loader = include $vendorPath.'/autoload.php';
         //$vendorPath = static::findParentPath('vendor');
         //$zf2Path = $vendorPath.'/zendframework/zendframework/library/';
 

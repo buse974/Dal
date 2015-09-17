@@ -20,13 +20,15 @@ class ClassMethods
     }
 
     /**
-     * Hydrate an object by populating getter/setter methods
+     * Hydrate an object by populating getter/setter methods.
      *
      * Hydrates an object by getter/setter methods of the object.
      *
-     * @param  array                            $data
-     * @param  object                           $object
+     * @param array  $data
+     * @param object $object
+     *
      * @return object
+     *
      * @throws Exception\BadMethodCallException for a non-object $object
      */
     public function hydrate(array &$data, $object, $unset = false)

@@ -11,7 +11,8 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 abstract class AbstractModel implements JsonSerializable, ServiceLocatorAwareInterface
 {
     /**
-     * Prefix name
+     * Prefix name.
+     *
      * @var string
      */
     protected $prefix;
@@ -20,7 +21,8 @@ abstract class AbstractModel implements JsonSerializable, ServiceLocatorAwareInt
     private $delimiter = '$';
 
     /**
-     * Construct model with associate table name
+     * Construct model with associate table name.
+     *
      * @param AbstractModel $parent_model
      * @param string        $prefix
      */
@@ -35,8 +37,10 @@ abstract class AbstractModel implements JsonSerializable, ServiceLocatorAwareInt
     }
 
     /**
-     * Populate from an array
-     * @param  array         $data
+     * Populate from an array.
+     *
+     * @param array $data
+     *
      * @return AbstractModel
      */
     public function exchangeArray(array &$data)
@@ -70,7 +74,8 @@ abstract class AbstractModel implements JsonSerializable, ServiceLocatorAwareInt
     }
 
     /**
-     * Convert the model to an array
+     * Convert the model to an array.
+     *
      * @return array
      */
     public function toArray()
@@ -110,7 +115,7 @@ abstract class AbstractModel implements JsonSerializable, ServiceLocatorAwareInt
                 unset($vars[$key]);
             } elseif (is_array($value)) {
                 foreach ($value as $v) {
-                    if(is_object($v)) {
+                    if (is_object($v)) {
                         unset($vars[$key]);
                         break;
                     }
@@ -142,8 +147,9 @@ abstract class AbstractModel implements JsonSerializable, ServiceLocatorAwareInt
     }
 
     /**
-     * Return true if relation is boucle infinie
-     * @return boolean
+     * Return true if relation is boucle infinie.
+     *
+     * @return bool
      */
     protected function isRepeatRelational()
     {
@@ -166,7 +172,7 @@ abstract class AbstractModel implements JsonSerializable, ServiceLocatorAwareInt
     }
 
     /**
-     * Get service locator
+     * Get service locator.
      *
      * @return ServiceLocatorInterface
      */
@@ -180,46 +186,46 @@ abstract class AbstractModel implements JsonSerializable, ServiceLocatorAwareInt
     }
 
     /**
-     * Set parent model
+     * Set parent model.
      *
      * @param AbstractModel $parent_model
      */
     public function setParentModel(AbstractModel $parent_model)
     {
         $this->parent_model = $parent_model;
-    
+
         return $this;
     }
-    
+
     /**
-     * Set parent model
+     * Set parent model.
      *
-     * @param integer $parent_model
+     * @param int $parent_model
      */
     public function setPrefix($prefix)
     {
-        if(null !== $prefix) {
+        if (null !== $prefix) {
             $this->prefix = $prefix;
         }
-    
+
         return $this;
     }
-    
+
     /**
-     * return Model if needed
+     * return Model if needed.
      *
      * @param string $model
-     * @param array $data
+     * @param array  $data
      *
      * @return AbstractModel|null
      */
     public function requireModel($model, &$data, $prefix = null)
     {
         $class = null;
-        $name = (null!==$prefix)?$prefix:explode('_', $model)[2];
-        
+        $name = (null !== $prefix) ? $prefix : explode('_', $model)[2];
+
         foreach ($data as $k => $v) {
-            if(strpos(explode('$', $k)[0], $name) !==false) {
+            if (strpos(explode('$', $k)[0], $name) !== false) {
                 $class = clone $this->getServiceLocator()->get($model);
                 $class->setPrefix($prefix);
                 $class->setParentModel($this);
@@ -227,12 +233,13 @@ abstract class AbstractModel implements JsonSerializable, ServiceLocatorAwareInt
                 break;
             }
         }
-    
+
         return $class;
     }
-    
+
     /**
-     * Convert to string
+     * Convert to string.
+     *
      * @return string
      */
     public function __toString()

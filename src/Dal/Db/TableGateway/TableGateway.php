@@ -1,8 +1,10 @@
 <?php
+
 /**
- * Zend Framework (http://framework.zend.com/)
+ * Zend Framework (http://framework.zend.com/).
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
+ *
  * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
@@ -20,9 +22,10 @@ class TableGateway extends BaseTableGateway
     protected $primary;
 
     /**
-     * Select
+     * Select.
      *
      * @param Where|\Closure|string|array $where
+     *
      * @return ResultSet
      */
     public function select($where = null, $order = null)
@@ -30,27 +33,27 @@ class TableGateway extends BaseTableGateway
         if (!$this->isInitialized) {
             $this->initialize();
         }
-    
+
         $select = $this->sql->select();
-        
+
         if ($where instanceof \Closure) {
             $where($select);
         } elseif ($where !== null) {
             $select->where($where);
         }
-        if($order !== null) {
+        if ($order !== null) {
             $select->order($order);
         }
-    
+
         return $this->selectWith($select);
     }
-    
-   /**
-    *
-    * @param  string                      $sql
-    * @param  array                       $param
-    * @return \Dal\Db\ResultSet\ResultSet
-    */
+
+    /**
+     * @param string $sql
+     * @param array  $param
+     *
+     * @return \Dal\Db\ResultSet\ResultSet
+     */
     public function selectPdo($select, $param = null)
     {
         $statement = $this->getAdapter()->query($select, ADT::QUERY_MODE_PREPARE);
@@ -61,11 +64,10 @@ class TableGateway extends BaseTableGateway
         return $resultSet->initialize($result);
     }
 
-   /**
-    *
-    * @param string $sql
-    * @param array  $param
-    */
+    /**
+     * @param string $sql
+     * @param array  $param
+     */
     public function requestPdo($request, $param = null)
     {
         $statement = $this->getAdapter()->query($request, ADT::QUERY_MODE_PREPARE);
@@ -78,7 +80,7 @@ class TableGateway extends BaseTableGateway
     }
 
     /**
-     * Select whith PDO without mappage
+     * Select whith PDO without mappage.
      *
      * @param string $sql
      * @param array  $param
@@ -92,28 +94,27 @@ class TableGateway extends BaseTableGateway
 
         return $resultSet->initialize($result);
     }
-    
 
     /**
-     * 
      * @param Select $select
+     *
      * @return \Zend\Db\TableGateway\ResultSetInterface
      */
     public function selectBridge(Select $select)
     {
-    	// prepare and execute
-    	$statement = $this->sql->prepareStatementForSqlObject($select);
-    	$result = $statement->execute();
-    	
-    	// build result set
-    	$resultSet = clone $this->resultSetPrototype;
-    	$resultSet->initialize($result);
+        // prepare and execute
+        $statement = $this->sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
 
-    	return $resultSet;
+        // build result set
+        $resultSet = clone $this->resultSetPrototype;
+        $resultSet->initialize($result);
+
+        return $resultSet;
     }
 
     /**
-     * Get Primary Keys
+     * Get Primary Keys.
      */
     public function getPrimaryKey()
     {
@@ -130,9 +131,9 @@ class TableGateway extends BaseTableGateway
 
         return $this->primary;
     }
-    
+
     protected function getMetadata()
     {
-    	return new Metadata($this->adapter);
+        return new Metadata($this->adapter);
     }
 }

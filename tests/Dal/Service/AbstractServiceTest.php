@@ -21,42 +21,42 @@ class AbstractServiceTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($mock->getServiceLocator(), $mock_service_locator_interface);
         $this->assertEquals($mock->getMapper(), $mock_mapper);
     }
-    
+
     public function testCallModel()
     {
-    	$mock_model = $this->getMockForAbstractClass('\Dal\Model\AbstractModel', array(), '', false, true, true, array());
-    
-    	$mock_service_locator_interface = $this->getMockForAbstractClass('\Zend\ServiceManager\ServiceLocatorInterface');
-    	$mock_service_locator_interface->expects($this->once())->method('get')->with('model-property')->will($this->returnValue($mock_model));
-    
-    	$mock = $this->getMockForAbstractClass('\Dal\Service\AbstractService');
-    	$mock->setServiceLocator($mock_service_locator_interface);
+        $mock_model = $this->getMockForAbstractClass('\Dal\Model\AbstractModel', array(), '', false, true, true, array());
 
-    	$reflexionClass = new \ReflectionClass($mock);
-    	$model = $reflexionClass->getProperty('model');
-    	$model->setAccessible(true);
-    	$model->setValue($mock, 'model-property');
-    	
-    	$this->assertEquals($mock->getServiceLocator(), $mock_service_locator_interface);
-    	$this->assertEquals($mock->getModel(), $mock_model);
+        $mock_service_locator_interface = $this->getMockForAbstractClass('\Zend\ServiceManager\ServiceLocatorInterface');
+        $mock_service_locator_interface->expects($this->once())->method('get')->with('model-property')->will($this->returnValue($mock_model));
+
+        $mock = $this->getMockForAbstractClass('\Dal\Service\AbstractService');
+        $mock->setServiceLocator($mock_service_locator_interface);
+
+        $reflexionClass = new \ReflectionClass($mock);
+        $model = $reflexionClass->getProperty('model');
+        $model->setAccessible(true);
+        $model->setValue($mock, 'model-property');
+
+        $this->assertEquals($mock->getServiceLocator(), $mock_service_locator_interface);
+        $this->assertEquals($mock->getModel(), $mock_model);
     }
-    
+
     public function testCallMapper()
     {
-    	$mock_model = $this->getMockForAbstractClass('\Dal\Model\AbstractModel', array(), '', false, true, true, array());
-    
-    	$mock_service_locator_interface = $this->getMockForAbstractClass('\Zend\ServiceManager\ServiceLocatorInterface');
-    	$mock_service_locator_interface->expects($this->once())->method('get')->with('mapper-property')->will($this->returnValue($mock_model));
-    
-    	$mock = $this->getMockForAbstractClass('\Dal\Service\AbstractService');
-    	$mock->setServiceLocator($mock_service_locator_interface);
-    
-    	$reflexionClass = new \ReflectionClass($mock);
-    	$mapper = $reflexionClass->getProperty('mapper');
-    	$mapper->setAccessible(true);
-    	$mapper->setValue($mock, 'mapper-property');
-    	 
-    	$this->assertEquals($mock->getServiceLocator(), $mock_service_locator_interface);
-    	$this->assertEquals($mock->getMapper(), $mock_model);
+        $mock_model = $this->getMockForAbstractClass('\Dal\Model\AbstractModel', array(), '', false, true, true, array());
+
+        $mock_service_locator_interface = $this->getMockForAbstractClass('\Zend\ServiceManager\ServiceLocatorInterface');
+        $mock_service_locator_interface->expects($this->once())->method('get')->with('mapper-property')->will($this->returnValue($mock_model));
+
+        $mock = $this->getMockForAbstractClass('\Dal\Service\AbstractService');
+        $mock->setServiceLocator($mock_service_locator_interface);
+
+        $reflexionClass = new \ReflectionClass($mock);
+        $mapper = $reflexionClass->getProperty('mapper');
+        $mapper->setAccessible(true);
+        $mapper->setValue($mock, 'mapper-property');
+
+        $this->assertEquals($mock->getServiceLocator(), $mock_service_locator_interface);
+        $this->assertEquals($mock->getMapper(), $mock_model);
     }
 }

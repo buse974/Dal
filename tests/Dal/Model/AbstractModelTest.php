@@ -15,24 +15,23 @@ class AbstractModelTest extends PHPUnit_Framework_TestCase
 
     public function testExchangeArrayBasic()
     {
-        $mock_model = $this->getMockForAbstractClass('\Dal\Model\AbstractModel', array(), '', false, true, true, array('setToto', 'setTata','setNull'));
-        
-        
+        $mock_model = $this->getMockForAbstractClass('\Dal\Model\AbstractModel', array(), '', false, true, true, array('setToto', 'setTata', 'setNull'));
+
         $mock_model->expects($this->once())
                    ->method('setToto')
                    ->with($this->equalTo('vtoto'))
                    ->will($this->returnSelf());
-        
+
         $mock_model->expects($this->once())
                    ->method('setTata')
                    ->with($this->equalTo('vtata'))
                    ->will($this->returnSelf());
-        
+
         $mock_model->expects($this->once())
                    ->method('setNull')
                    ->with($this->equalTo(new IsNull()))
                    ->will($this->returnSelf());
-        
+
         $datas = array('toto' => 'vtoto', 'tata' => 'vtata', 'null' => null);
         $this->assertEquals($mock_model->exchangeArray($datas), $mock_model);
         $this->assertEmpty($datas);
@@ -65,7 +64,7 @@ class AbstractModelTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($mock_model_parent->exchangeArray($datas), $mock_model_parent);
         $this->assertEmpty($datas);
     }
-    
+
     public function testAllParent()
     {
         $mock_model_parent = $this->getMockForAbstractClass('\Dal\Model\AbstractModel', array(null, 'parent_prefix'), 'parentModel', true, true, true);
@@ -88,22 +87,22 @@ class AbstractModelTest extends PHPUnit_Framework_TestCase
 
     public function testToArray()
     {
-    	$m_array = $this->getMockBuilder('array_mock')
-    	                ->setMethods(array('toArray'))
-    	                ->getMock();
-    	
-    	$m_array->expects($this->once())
-    	        ->method('toArray')
-    	        ->will($this->returnValue(array()));
-    	
+        $m_array = $this->getMockBuilder('array_mock')
+                        ->setMethods(array('toArray'))
+                        ->getMock();
+
+        $m_array->expects($this->once())
+                ->method('toArray')
+                ->will($this->returnValue(array()));
+
         $mock_model_child = $this->getMockObjectGenerator()
                                  ->getMock('mock', array('toArray'));
-        
+
         $mock_model_child->expects($this->any())
                          ->method('toArray')
                          ->will($this->returnValue(array('key' => 'vchild')));
 
-        $mock_model = $this->getMockForAbstractClass('\Dal\Model\AbstractModel', array(null, 'prefix'), '', true, true, true, array('getObjArrayEmpty','getArray', 'getBool', 'getToto', 'getTata', 'getNothing', 'getNull', 'getChild', 'getOtherObj'));
+        $mock_model = $this->getMockForAbstractClass('\Dal\Model\AbstractModel', array(null, 'prefix'), '', true, true, true, array('getObjArrayEmpty', 'getArray', 'getBool', 'getToto', 'getTata', 'getNothing', 'getNull', 'getChild', 'getOtherObj'));
         $mock_model->expects($this->any())->method('getToto')->will($this->returnValue('vtoto'));
         $mock_model->expects($this->any())->method('getBool')->will($this->returnValue(true));
         $mock_model->expects($this->any())->method('getArray')->will($this->returnValue(array('array')));
@@ -129,8 +128,6 @@ class AbstractModelTest extends PHPUnit_Framework_TestCase
         $this->assertArrayNotHasKey('obj_array_empty', $out);
         $this->assertArrayNotHasKey('other_obj', $out);
 
-        
-        
         $this->assertEquals($out['nothing'], null);
         $this->assertEquals($out['toto'], 'vtoto');
         $this->assertEquals($out['bool'], 1);

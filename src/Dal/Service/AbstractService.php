@@ -15,7 +15,7 @@ abstract class AbstractService implements ServiceLocatorAwareInterface
     {
         if ($params !== null) {
             $this->mapper = sprintf('%s_mapper_%s', $params['prefix'], $params['name']);
-            $this->model  = sprintf('%s_model_%s', $params['prefix'], $params['name']);
+            $this->model = sprintf('%s_model_%s', $params['prefix'], $params['name']);
         }
     }
 
@@ -33,13 +33,13 @@ abstract class AbstractService implements ServiceLocatorAwareInterface
     {
         return $this->getServiceLocator()->get($this->mapper);
     }
-    
+
     /**
      * @return \Dal\Model\AbstractModel
      */
     public function getModel()
     {
-    	return clone $this->getServiceLocator()->get($this->model);
+        return clone $this->getServiceLocator()->get($this->model);
     }
 
     public function setServiceLocator(ServiceLocatorInterface $serviceLocator)

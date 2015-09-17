@@ -7,11 +7,12 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 class ModelAbstractFactory extends AbstractFactory
 {
     /**
-     * Determine if we can create a service with name
+     * Determine if we can create a service with name.
      *
-     * @param  ServiceLocatorInterface $serviceLocator
+     * @param ServiceLocatorInterface $serviceLocator
      * @param $name
      * @param $requestedName
+     *
      * @return bool
      */
     public function canCreateServiceWithName(ServiceLocatorInterface $serviceLocator, $name, $requestedName)
@@ -23,13 +24,14 @@ class ModelAbstractFactory extends AbstractFactory
     }
 
     /**
-     * Create service with name
+     * Create service with name.
      *
-     * @param  ServiceLocatorInterface           $serviceLocator
+     * @param ServiceLocatorInterface $serviceLocator
      * @param $name
      * @param $requestedName
+     *
      * @return \Dms\ServiceFactory\CodingFactory
-    */
+     */
     public function createServiceWithName(ServiceLocatorInterface $serviceLocator, $name, $requestedName)
     {
         $prefix = current(explode('_', $requestedName));

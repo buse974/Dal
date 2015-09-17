@@ -7,10 +7,11 @@ use Zend\Db\Sql\Exception\InvalidArgumentException;
 
 class Sql extends BaseSql
 {
-	/**
-	 * (non-PHPdoc)
-	 * @see \Zend\Db\Sql\Sql::select()
-	 */
+    /**
+     * (non-PHPdoc).
+     *
+     * @see \Zend\Db\Sql\Sql::select()
+     */
     public function select($table = null)
     {
         if ($this->table !== null && $table !== null) {

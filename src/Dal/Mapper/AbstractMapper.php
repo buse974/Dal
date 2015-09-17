@@ -4,11 +4,9 @@ namespace Dal\Mapper;
 
 use Dal\Db\Sql\Select;
 use Dal\Db\TableGateway\TableGateway;
-use Zend\Paginator\Adapter\DbSelect;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Dal\Model\AbstractModel;
-use Dal\Db\ResultSet\ResultSet;
 use Dal\Paginator\Paginator;
 
 abstract class AbstractMapper implements ServiceLocatorAwareInterface
@@ -23,19 +21,17 @@ abstract class AbstractMapper implements ServiceLocatorAwareInterface
     protected $serviceLocator;
 
     /**
-     *
      * @var \Dal\Db\ResultSet\ResultSet
      */
     protected $result;
 
     /**
-     *
      * @var array
      */
     protected $primary_key;
 
     /**
-     * Construct the model with the tablegateway
+     * Construct the model with the tablegateway.
      *
      * @param TableGateway $tableGateway
      */
@@ -45,7 +41,7 @@ abstract class AbstractMapper implements ServiceLocatorAwareInterface
     }
 
     /**
-     * Update a modele
+     * Update a modele.
      *
      * @param \Dal\Model\AbstractModel $model
      * @param array                    $order
@@ -61,17 +57,17 @@ abstract class AbstractMapper implements ServiceLocatorAwareInterface
             if ($order) {
                 $sl->order($order);
             }
+
             return  $this->initPaginator($sl);
         }
 
-        
         $this->result = $this->tableGateway->select($model->toArrayCurrent(), $order);
 
         return $this->result;
     }
 
     /**
-     * Excecute request directly by PDO
+     * Excecute request directly by PDO.
      *
      * @param string $request
      * @param array  $param
@@ -86,7 +82,7 @@ abstract class AbstractMapper implements ServiceLocatorAwareInterface
     }
 
     /**
-     * Excecute select directly by PDO
+     * Excecute select directly by PDO.
      *
      * @param string $select
      * @param array  $param
@@ -95,17 +91,17 @@ abstract class AbstractMapper implements ServiceLocatorAwareInterface
      */
     public function selectBridge(Select $select)
     {
-    	if ($this->usePaginator === true) {
-    		return $this->initPaginator($select);
-    	}
-    	
-    	$this->result = $this->tableGateway->selectBridge($select);
-    
-    	return $this->result;
+        if ($this->usePaginator === true) {
+            return $this->initPaginator($select);
+        }
+
+        $this->result = $this->tableGateway->selectBridge($select);
+
+        return $this->result;
     }
-    
+
     /**
-     * Excecute select directly by PDO
+     * Excecute select directly by PDO.
      *
      * @param string $select
      * @param array  $param
@@ -123,7 +119,7 @@ abstract class AbstractMapper implements ServiceLocatorAwareInterface
     }
 
     /**
-     * Excecute select directly by PDO wihtout Mappage Model
+     * Excecute select directly by PDO wihtout Mappage Model.
      *
      * @param string $select
      * @param array  $param
@@ -137,14 +133,14 @@ abstract class AbstractMapper implements ServiceLocatorAwareInterface
         }
         $this->result = $this->tableGateway->selectNMPdo($select, $param);
 
-        
         return $this->result;
     }
 
     /**
-     * Select request
+     * Select request.
      *
      * @param \Zend\Db\Sql\Select
+     *
      * @return \Zend\Db\ResultSet\ResultSet
      */
     public function selectWith(\Zend\Db\Sql\Select $select)
@@ -159,7 +155,7 @@ abstract class AbstractMapper implements ServiceLocatorAwareInterface
     }
 
     /**
-     * Fetch All
+     * Fetch All.
      *
      * @return \Zend\Db\ResultSet\ResultSet
      */
@@ -168,17 +164,17 @@ abstract class AbstractMapper implements ServiceLocatorAwareInterface
         if ($this->usePaginator === true) {
             return $this->initPaginator($this->tableGateway->getSql()->select());
         }
-        $this->result =  $this->tableGateway->select();
+        $this->result = $this->tableGateway->select();
 
         return $this->result;
     }
 
     /**
-     * Delete request
+     * Delete request.
      *
      * @param \Zend\Db\Sql\Delete
      *
-     * @return integer
+     * @return int
      */
     public function deleteWith(\Zend\Db\Sql\Delete $delete)
     {
@@ -186,11 +182,11 @@ abstract class AbstractMapper implements ServiceLocatorAwareInterface
     }
 
     /**
-     * Insert request
+     * Insert request.
      *
      * @param \Zend\Db\Sql\Insert
      *
-     * @return integer
+     * @return int
      */
     public function insertWith(\Zend\Db\Sql\Insert $insert)
     {
@@ -198,11 +194,11 @@ abstract class AbstractMapper implements ServiceLocatorAwareInterface
     }
 
     /**
-     * Update request
+     * Update request.
      *
      * @param \Zend\Db\Sql\Update
      *
-     * @return integer
+     * @return int
      */
     public function updateWith(\Zend\Db\Sql\Update $update)
     {
@@ -210,7 +206,7 @@ abstract class AbstractMapper implements ServiceLocatorAwareInterface
     }
 
     /**
-     * Get row
+     * Get row.
      *
      * @param string    $column
      * @param multitype $value
@@ -225,11 +221,11 @@ abstract class AbstractMapper implements ServiceLocatorAwareInterface
     }
 
     /**
-     * Insert a new modele
+     * Insert a new modele.
      *
      * @param \Dal\Model\AbstractModel $model
      *
-     * @return integer
+     * @return int
      */
     public function insert(AbstractModel $model)
     {
@@ -237,9 +233,9 @@ abstract class AbstractMapper implements ServiceLocatorAwareInterface
     }
 
     /**
-     * Get Last insert value
+     * Get Last insert value.
      *
-     * @return integer
+     * @return int
      */
     public function getLastInsertValue()
     {
@@ -247,12 +243,12 @@ abstract class AbstractMapper implements ServiceLocatorAwareInterface
     }
 
     /**
-     * Update a modele
+     * Update a modele.
      *
      * @param \Dal\Model\AbstractModel $model
      * @param array                    $where
      *
-     * @return integer
+     * @return int
      */
     public function update(AbstractModel $model, $where = null)
     {
@@ -270,11 +266,11 @@ abstract class AbstractMapper implements ServiceLocatorAwareInterface
     }
 
     /**
-     * Delete full modele
+     * Delete full modele.
      *
      * @param \Dal\Model\AbstractModel $model
      *
-     * @return boolean
+     * @return bool
      */
     public function delete(AbstractModel $model)
     {
@@ -288,20 +284,20 @@ abstract class AbstractMapper implements ServiceLocatorAwareInterface
     }
 
     /**
-     * Set the mapper options and enable the mapper
+     * Set the mapper options and enable the mapper.
      *
      * @param array $options
      *
      * @return AbstractMapper
      */
-    public function usePaginator( $options = array())
+    public function usePaginator($options = array())
     {
-        if(empty($options) || $options===null) {
-            $this->usePaginator=false;
-            
+        if (empty($options) || $options === null) {
+            $this->usePaginator = false;
+
             return $this;
         }
-        
+
         $this->usePaginator = true;
 
         $this->paginatorOptions['s'] = (isset($options['s'])) ? $options['s'] : null;
@@ -315,7 +311,7 @@ abstract class AbstractMapper implements ServiceLocatorAwareInterface
     }
 
     /**
-     * Init the paginator with a select object
+     * Init the paginator with a select object.
      *
      * @param \Zend\Db\Sql\Select|array $select
      *
@@ -324,37 +320,36 @@ abstract class AbstractMapper implements ServiceLocatorAwareInterface
     protected function initPaginator($select)
     {
         $this->usePaginator = false;
-        
+
         $this->paginator = new Paginator(
-        			$select,
-        			$this->tableGateway->getAdapter(), 
-        			$this->tableGateway->getResultSetPrototype());
-        
-        if(isset($this->paginatorOptions['n'])) {
-        	$this->paginator->setN($this->paginatorOptions['n']);
+                    $select,
+                    $this->tableGateway->getAdapter(),
+                    $this->tableGateway->getResultSetPrototype());
+
+        if (isset($this->paginatorOptions['n'])) {
+            $this->paginator->setN($this->paginatorOptions['n']);
         }
-        if(isset($this->paginatorOptions['p'])) {
-        	$this->paginator->setP($this->paginatorOptions['p']);
+        if (isset($this->paginatorOptions['p'])) {
+            $this->paginator->setP($this->paginatorOptions['p']);
         }
-        if(isset($this->paginatorOptions['c'])) {
-        	$this->paginator->setC($this->paginatorOptions['c']);
+        if (isset($this->paginatorOptions['c'])) {
+            $this->paginator->setC($this->paginatorOptions['c']);
         }
-        if(isset($this->paginatorOptions['s'])) {
-        	$this->paginator->setS($this->paginatorOptions['s']);
+        if (isset($this->paginatorOptions['s'])) {
+            $this->paginator->setS($this->paginatorOptions['s']);
         }
-        if(isset($this->paginatorOptions['d'])) {
-        	$this->paginator->setD($this->paginatorOptions['d']);
-    	}
-    	if(isset($this->paginatorOptions['o'])) {
-    	    $this->paginator->setO($this->paginatorOptions['o']);
-    	}
-        
+        if (isset($this->paginatorOptions['d'])) {
+            $this->paginator->setD($this->paginatorOptions['d']);
+        }
+        if (isset($this->paginatorOptions['o'])) {
+            $this->paginator->setO($this->paginatorOptions['o']);
+        }
+
         return $this->paginator->getItems();
     }
 
     /**
-     *
-     * @return integer
+     * @return int
      */
     public function count()
     {
@@ -362,13 +357,13 @@ abstract class AbstractMapper implements ServiceLocatorAwareInterface
             $count = $this->result->count();
         } elseif ($this->paginator instanceof Paginator) {
             $count = $this->paginator->getTotalItemCount();
-        } 
-        
+        }
+
         return $count;
     }
 
     /**
-     * Return request sql
+     * Return request sql.
      *
      * @param \Zend\Db\Sql\SqlInterface $request
      *
@@ -390,10 +385,10 @@ abstract class AbstractMapper implements ServiceLocatorAwareInterface
     }
 
     /**
-     * Get service locator
+     * Get service locator.
      *
      * @return ServiceLocatorInterface
-    */
+     */
     public function getServiceLocator()
     {
         return $this->serviceLocator;
