@@ -48,8 +48,6 @@ abstract class AbstractModel implements JsonSerializable, ServiceLocatorAwareInt
         }
         $formatted = array();
 
-        
-        
         if ($this->prefix !== null) {
             foreach ($data as $key => $value) {
                 if (0 === strpos($key, $this->allParent().$this->delimiter)) {
@@ -181,6 +179,58 @@ abstract class AbstractModel implements JsonSerializable, ServiceLocatorAwareInt
         return $this->service_locator;
     }
 
+    /**
+     * Set parent model
+     *
+     * @param AbstractModel $parent_model
+     */
+    public function setParentModel(AbstractModel $parent_model)
+    {
+        $this->parent_model = $parent_model;
+    
+        return $this;
+    }
+    
+    /**
+     * Set parent model
+     *
+     * @param integer $parent_model
+     */
+    public function setPrefix($prefix)
+    {
+        if(null !== $prefix) {
+            $this->prefix = $prefix;
+        }
+    
+        return $this;
+    }
+    
+    /**
+     * return Model if needed
+     *
+     * @param string $model
+     * @param array $data
+     *
+     * @return AbstractModel|null
+     */
+    public function requireModel($model, &$data, $prefix = null)
+    {
+        $class = null;
+        $name = (null!==$prefix)?$prefix:explode('_', $model)[2];
+        
+        foreach ($data as $k => $v) {
+            if(strpos(explode('$', $k)[0], $name) !==false) {
+                $class = clone $this->getServiceLocator()->get($model);
+                $class->setPrefix($prefix);
+                $class->setParentModel($this);
+                $class->exchangeArray($data);
+                break;
+            }
+        }
+    
+        return $class;
+    }
+    
     /**
      * Convert to string
      * @return string
