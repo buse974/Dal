@@ -18,6 +18,7 @@ use Dal\Model\AbstractModel;
 class ResultSet extends BaseResultSet implements JsonSerializable
 {
     protected $bufferArrayObjectPrototype = false;
+    protected $array_prefix = null;
 
     /**
      * To Array by parent id.
@@ -156,7 +157,26 @@ class ResultSet extends BaseResultSet implements JsonSerializable
      */
     public function current()
     {
-        $data = parent::current();
+        $data = \Zend\Db\ResultSet\AbstractResultSet::current();
+        
+        if ($this->returnType === self::TYPE_ARRAYOBJECT && is_array($data)) {
+            $ao = clone $this->arrayObjectPrototype;
+            if ($ao instanceof ArrayObject || method_exists($ao, 'exchangeArray')) {
+                if(null === $this->array_prefix) {
+                    $tab = [];
+                    foreach ($data as $k => $v){
+                         if(strpos($k, '$')!==false) {
+                            $tab[] = explode('$', $k)[0];
+                         }
+                    }
+                    $this->array_prefix = array_unique($tab);
+                }
+                $ao->setArrayPrefix($this->array_prefix);
+                $ao->exchangeArray($data);
+            }
+            
+            $data = $ao;
+        }
 
         if ($this->bufferArrayObjectPrototype && $this->buffer[$this->position] !== $data) {
             $this->buffer[$this->position] = $data;

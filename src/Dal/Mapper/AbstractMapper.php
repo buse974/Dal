@@ -349,10 +349,12 @@ abstract class AbstractMapper implements ServiceLocatorAwareInterface
     }
 
     /**
-     * @return int
+     * @return integer|null
      */
     public function count()
     {
+        $count = null;
+        
         if ($this->paginator === null) {
             $count = $this->result->count();
         } elseif ($this->paginator instanceof Paginator) {

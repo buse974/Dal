@@ -16,6 +16,7 @@ abstract class AbstractModel implements JsonSerializable, ServiceLocatorAwareInt
      * @var string
      */
     protected $prefix;
+    protected $array_prefix = null;
     protected $parent_model;
     protected $service_locator = null;
     private $delimiter = '$';
@@ -198,7 +199,7 @@ abstract class AbstractModel implements JsonSerializable, ServiceLocatorAwareInt
     }
 
     /**
-     * Set parent model.
+     * Set prefix.
      *
      * @param int $parent_model
      */
@@ -210,24 +211,40 @@ abstract class AbstractModel implements JsonSerializable, ServiceLocatorAwareInt
 
         return $this;
     }
+    
+    /**
+     * Set array prefix.
+     *
+     * @param integer array_prefix
+     */
+    public function setArrayPrefix($array_prefix)
+    {
+        if (null !== $array_prefix) {
+            $this->array_prefix = $array_prefix;
+        }
+    
+        return $this;
+    }
 
     /**
      * return Model if needed.
      *
-     * @param string $model
-     * @param array  $data
+     * @param string  $model
+     * @param array   $data
+     * @param string  $prefix
      *
      * @return AbstractModel|null
      */
     public function requireModel($model, &$data, $prefix = null)
     {
         $class = null;
-        $name = (null !== $prefix) ? $prefix : explode('_', $model)[2];
-
-        foreach ($data as $k => $v) {
-            if (strpos(explode('$', $k)[0], $name) !== false) {
+        $name = (null !== $prefix) ? $prefix : substr($model, strlen(explode('_', $model)[0]) + 7);
+        foreach ($this->array_prefix as $k => $ap) {
+            if (strpos($ap, $name) === (strlen($ap)-strlen($name))) {
+                unset($this->array_prefix[$k]);
                 $class = clone $this->getServiceLocator()->get($model);
                 $class->setPrefix($prefix);
+                $class->setArrayPrefix($this->array_prefix);
                 $class->setParentModel($this);
                 $class->exchangeArray($data);
                 break;
