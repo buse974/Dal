@@ -111,8 +111,15 @@ abstract class AbstractModel implements JsonSerializable, ServiceLocatorAwareInt
         $hydrator = new ClassMethods();
         $vars = $hydrator->extract($this);
 
+        $predivar = [];
         foreach ($vars as $key => &$value) {
-            if ($value === null || (is_object($value) && !$value instanceof IsNull)) {
+            if ($value instanceof \Zend\Db\Sql\Predicate\PredicateInterface) {
+                if(method_exists($value, 'setIdentifier')) {
+                    $value->setIdentifier($key);
+                }
+                $predivar[] = $value;
+                unset($vars[$key]);
+            } elseif ($value === null || is_object($value)) {
                 unset($vars[$key]);
             } elseif (is_array($value)) {
                 foreach ($value as $v) {
@@ -121,13 +128,29 @@ abstract class AbstractModel implements JsonSerializable, ServiceLocatorAwareInt
                         break;
                     }
                 }
-            } elseif (is_object($value) && $value instanceof IsNull) {
-                $vars[$key] = null;
             } elseif (is_bool($value)) {
                 $vars[$key] = (int) $value;
             }
         }
 
+        return array_merge($vars, $predivar);
+    }
+    
+    public function toArrayCurrentNoPredicate()
+    {
+        $hydrator = new ClassMethods();
+        $vars = $hydrator->extract($this);
+    
+        foreach ($vars as $key => &$value) {
+            if ($value instanceof \Zend\Db\Sql\Predicate\IsNull) {
+                $vars[$key] = null;
+            } elseif ($value === null || is_object($value)) {
+                unset($vars[$key]);
+            } elseif (is_bool($value)) {
+                $vars[$key] = (int) $value;
+            }
+        }
+    
         return $vars;
     }
 

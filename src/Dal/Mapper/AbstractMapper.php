@@ -229,7 +229,7 @@ abstract class AbstractMapper implements ServiceLocatorAwareInterface
      */
     public function insert(AbstractModel $model)
     {
-        return $this->tableGateway->insert($model->toArrayCurrent());
+        return $this->tableGateway->insert($model->toArrayCurrentNoPredicate());
     }
 
     /**
@@ -252,7 +252,7 @@ abstract class AbstractMapper implements ServiceLocatorAwareInterface
      */
     public function update(AbstractModel $model, $where = null)
     {
-        $datas = $model->toArrayCurrent();
+        $datas = $model->toArrayCurrentNoPredicate();
 
         if ($where === null) {
             foreach ($this->tableGateway->getPrimaryKey() as $key) {
