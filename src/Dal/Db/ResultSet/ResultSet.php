@@ -162,22 +162,23 @@ class ResultSet extends BaseResultSet implements JsonSerializable
         if ($this->returnType === self::TYPE_ARRAYOBJECT && is_array($data)) {
             $ao = clone $this->arrayObjectPrototype;
             if ($ao instanceof ArrayObject || method_exists($ao, 'exchangeArray')) {
-                if(null === $this->array_prefix) {
-                    $tab = [];
-                    foreach ($data as $k => $v){
-                         if(strpos($k, '$')!==false) {
-                            $tab[] = explode('$', $k)[0];
-                         }
+                if ($ao instanceof AbstractModel) {
+                    if(null === $this->array_prefix) {
+                        $tab = [];
+                        foreach ($data as $k => $v){
+                            if(strpos($k, '$')!==false) {
+                                $tab[] = explode('$', $k)[0];
+                            }
+                        }
+                        $this->array_prefix = array_unique($tab);
                     }
-                    $this->array_prefix = array_unique($tab);
+                    $ao->setArrayPrefix($this->array_prefix);
                 }
-                $ao->setArrayPrefix($this->array_prefix);
                 $ao->exchangeArray($data);
             }
-            
             $data = $ao;
         }
-
+            
         if ($this->bufferArrayObjectPrototype && $this->buffer[$this->position] !== $data) {
             $this->buffer[$this->position] = $data;
         }
