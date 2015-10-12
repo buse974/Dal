@@ -290,9 +290,9 @@ abstract class AbstractMapper implements ServiceLocatorAwareInterface
      *
      * @return AbstractMapper
      */
-    public function usePaginator($options = array())
+    public function usePaginator($options)
     {
-        if (empty($options) || $options === null) {
+        if ($options === null) {
             $this->usePaginator = false;
 
             return $this;

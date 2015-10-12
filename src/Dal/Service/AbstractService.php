@@ -15,7 +15,7 @@ abstract class AbstractService implements ServiceLocatorAwareInterface
     {
         if ($params !== null) {
             $this->mapper = sprintf('%s_mapper_%s', $params['prefix'], $params['name']);
-            $this->model = sprintf('%s_model_%s', $params['prefix'], $params['name']);
+            $this->model = sprintf('%s_modelbase_%s', $params['prefix'], $params['name']);
         }
     }
 
