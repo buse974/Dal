@@ -262,14 +262,9 @@ abstract class AbstractModel implements JsonSerializable, ServiceLocatorAwareInt
     {
         $class = null;
         $name = (null !== $prefix) ? $prefix : substr($model, strlen(explode('_', $model)[0]) + 7);
-        
-        //print_r($this->array_prefix);
-        //echo "\n name       : ".$name;
+
         foreach ($this->array_prefix as $k => $ap) {
-            echo "\n\n \$ap       : ".$ap;
-            echo "\n name      : ".$name;
             if (strrpos($ap, $name) === (strlen($ap)-strlen($name))) {
-                echo "\nGOOD";
                 unset($this->array_prefix[$k]);
                 $class = clone $this->getServiceLocator()->get($model);
                 $class->setPrefix($prefix);
@@ -280,7 +275,6 @@ abstract class AbstractModel implements JsonSerializable, ServiceLocatorAwareInt
             }
         }
 
-        echo "\n=======\n";
         return $class;
     }
 
