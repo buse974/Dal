@@ -87,7 +87,7 @@ abstract class AbstractModel implements JsonSerializable, ServiceLocatorAwareInt
         foreach ($vars as $key => &$value) {
             if ($value === null) {
                 unset($vars[$key]);
-            } elseif (is_object($value)) {
+            } elseif (is_object($value) && !$value instanceof \ArrayObject) {
                 if (method_exists($value, 'toArray')) {
                     $value = $value->toArray();
                     if (count($value) == 0) {
