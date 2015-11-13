@@ -19,7 +19,10 @@ abstract class AbstractModel implements JsonSerializable, ServiceLocatorAwareInt
     protected $array_prefix = null;
     protected $parent_model;
     protected $service_locator = null;
+    protected $all_parent;
     private $delimiter = '$';
+    private $delimiter_opt = '!';
+    private $keep = true; 
 
     /**
      * Construct model with associate table name.
@@ -46,30 +49,33 @@ abstract class AbstractModel implements JsonSerializable, ServiceLocatorAwareInt
      */
     public function exchangeArray(array &$data)
     {
-        foreach ($data as &$val) {
-            if (empty($val) && !is_numeric($val)) {
-                $val = new IsNull();
-            }
-        }
-        $formatted = array();
-
-        if ($this->prefix !== null) {
+        $hydrator = new ClassMethods();
+        $formatted = [];
+        if(null !== $this->prefix) {
+            $pr = $this->allParent();
+            $eq = ($pr === $this->prefix);
             foreach ($data as $key => $value) {
-                if (0 === strpos($key, $this->allParent().$this->delimiter)) {
-                    $formatted[substr($key, strlen($this->allParent().$this->delimiter))] = $value;
-                    unset($data[$key]);
-                } elseif (0 === strpos($key, $this->prefix.$this->delimiter)) {
-                    $formatted[substr($key, strlen($this->prefix.$this->delimiter))] = $value;
+                $fkey = null;
+                if (0 === ($tmp = strpos($key, $this->prefix . $this->delimiter))) {
+                    $fkey = substr($key, strlen($this->prefix . $this->delimiter));
+                } elseif ($eq===false && $tmp!==false && 0 === strpos($key, $pr . $this->delimiter)) {
+                    $fkey = substr($key, strlen($pr . $this->delimiter));
+                } 
+                if (null!==$fkey && $hydrator->canBeHydrated($fkey, $this)) {
+                    $formatted[$fkey] = ($value===null) ? new IsNull() : $value;
                     unset($data[$key]);
                 }
             }
         }
-        $hydrator = new ClassMethods();
-        if (!empty($formatted)) {
-            $hydrator->hydrate($formatted, $this);
-        } else {
-            $hydrator->hydrate($data, $this, true);
+        if(null===$this->prefix || empty($formatted)) {
+            foreach ($data as $key => $value) {
+                if ($hydrator->canBeHydrated($key, $this)) {
+                    $formatted[$key] = ($value===null) ? new IsNull() : $value;
+                    unset($data[$key]);
+                }
+            }
         }
+        $hydrator->hydrate($formatted, $this);
 
         return $this;
     }
@@ -156,7 +162,11 @@ abstract class AbstractModel implements JsonSerializable, ServiceLocatorAwareInt
 
     public function allParent()
     {
-        return (null !== $this->parent_model) ? $this->parent_model->allParent().'_'.$this->prefix : $this->prefix;
+        if(null===$this->all_parent) {
+            $this->all_parent = (null !== $this->parent_model) ? $this->parent_model->allParent().'_'.$this->prefix : $this->prefix;
+        }
+        
+        return $this->all_parent;
     }
 
     public function jsonSerialize()
@@ -271,6 +281,9 @@ abstract class AbstractModel implements JsonSerializable, ServiceLocatorAwareInt
                 $class->setArrayPrefix($this->array_prefix);
                 $class->setParentModel($this);
                 $class->exchangeArray($data);
+                if(!$class->Keep()) {
+                    return null;
+                }
                 break;
             }
         }
@@ -278,6 +291,11 @@ abstract class AbstractModel implements JsonSerializable, ServiceLocatorAwareInt
         return $class;
     }
 
+    public function Keep()
+    {
+        return $this->keep;
+    }
+    
     /**
      * Convert to string.
      *
