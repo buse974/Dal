@@ -38,7 +38,7 @@ class ServiceAbstractFactoryTest extends AbstractHttpControllerTestCase
         $model->setAccessible(true);
 
         $this->assertEquals('dal-test_mapper_table', $mapper->getValue($out));
-        $this->assertEquals('dal-test_model_table', $model->getValue($out));
+        $this->assertEquals('dal-test_modelbase_table', $model->getValue($out));
         $this->assertInstanceOf('Mock\Service\Table', $out);
     }
 

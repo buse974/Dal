@@ -20,7 +20,7 @@
     "phpunit/phpunit" : ">=4"
   },
   "autoload": {
-        "psr-0": { "Dal": "src/" }
+        "psr-4": { "Dal\\": "src/" }
   },
   "config": {
        "bin-dir": "bin/"

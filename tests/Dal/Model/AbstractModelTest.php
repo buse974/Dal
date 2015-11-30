@@ -159,13 +159,12 @@ class AbstractModelTest extends PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('toto', $out);
         $this->assertArrayHasKey('bool', $out);
         $this->assertArrayHasKey('tata', $out);
-        $this->assertArrayHasKey('nothing', $out);
+        $this->assertArrayNotHasKey('nothing', $out);
 
         $this->assertArrayNotHasKey('child', $out);
         $this->assertArrayNotHasKey('null', $out);
         $this->assertArrayNotHasKey('other_obj', $out);
 
-        $this->assertEquals($out['nothing'], null);
         $this->assertEquals($out['toto'], 'vtoto');
         $this->assertEquals($out['bool'], 1);
         $this->assertEquals($out['tata'], 'vtata');

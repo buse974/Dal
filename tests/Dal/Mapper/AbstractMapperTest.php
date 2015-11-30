@@ -45,7 +45,7 @@ class AbstractMapperTest extends PHPUnit_Framework_TestCase
                           ->method('initPaginator')
                           ->will($this->returnValue('paginition'));
 
-        $m_abstract_mapper->usePaginator();
+        $m_abstract_mapper->usePaginator([]);
         $m_model = $this->getMockForAbstractClass('Dal\Model\AbstractModel');
         $out = $m_abstract_mapper->select($m_model, array('order'));
 
@@ -107,12 +107,12 @@ class AbstractMapperTest extends PHPUnit_Framework_TestCase
                         ->will($this->returnValue('result'));
 
         $m_abstract_mapper = $this->getMockBuilder('Dal\Mapper\AbstractMapper')
-                                  ->setMethods(array('initPaginatorPDO'))
+                                  ->setMethods(array('initPaginator'))
                                   ->setConstructorArgs(array($m_table_gateway))
                                   ->getMock();
 
         $m_abstract_mapper->expects($this->once())
-                          ->method('initPaginatorPDO')
+                          ->method('initPaginator')
                           ->with(array('request', 'param'))
                           ->will($this->returnValue('requestPagination'));
 
@@ -123,7 +123,7 @@ class AbstractMapperTest extends PHPUnit_Framework_TestCase
 
         $out = $m_abstract_mapper->selectPdo('request', 'param');
 
-        $this->assertEquals('result', $out);
+        $this->assertEquals('requestPagination', $out);
     }
 
     public function testSelectNMPdo()
@@ -138,12 +138,12 @@ class AbstractMapperTest extends PHPUnit_Framework_TestCase
                         ->will($this->returnValue('result'));
 
         $m_abstract_mapper = $this->getMockBuilder('Dal\Mapper\AbstractMapper')
-                                  ->setMethods(array('initPaginatorPDO'))
+                                  ->setMethods(array('initPaginator'))
                                   ->setConstructorArgs(array($m_table_gateway))
                                   ->getMock();
 
         $m_abstract_mapper->expects($this->once())
-                          ->method('initPaginatorPDO')
+                          ->method('initPaginator')
                           ->with(array('request', 'param'))
                           ->will($this->returnValue('requestPagination'));
 
@@ -154,7 +154,7 @@ class AbstractMapperTest extends PHPUnit_Framework_TestCase
 
         $out = $m_abstract_mapper->selectNMPdo('request', 'param');
 
-        $this->assertEquals('result', $out);
+        $this->assertEquals('requestPagination', $out);
     }
 
     public function testSelectWith()
@@ -375,7 +375,7 @@ class AbstractMapperTest extends PHPUnit_Framework_TestCase
     public function testUpdate()
     {
         $m_model = $this->getMockBuilder('Dal\Model\AbstractModel')->disableOriginalConstructor()->getMock();
-        $m_model->expects($this->any())->method('toArrayCurrent')->will($this->returnValue(array('value' => 3)));
+        $m_model->expects($this->any())->method('toArrayCurrentNoPredicate')->will($this->returnValue(array('value' => 3)));
 
         $m_table_gateway = $this->getMockBuilder('Dal\Db\TableGateway\TableGateway')->disableOriginalConstructor()->getMock();
         $m_table_gateway->expects($this->any())->method('update')->will($this->returnValue('result'));
@@ -389,7 +389,7 @@ class AbstractMapperTest extends PHPUnit_Framework_TestCase
     public function testUpdateNoWhereParam()
     {
         $m_model = $this->getMockBuilder('Dal\Model\AbstractModel')->disableOriginalConstructor()->getMock();
-        $m_model->expects($this->any())->method('toArrayCurrent')->will($this->returnValue(array('value' => 3, 'id' => 3)));
+        $m_model->expects($this->any())->method('toArrayCurrentNoPredicate')->will($this->returnValue(array('value' => 3, 'id' => 3)));
 
         $m_table_gateway = $this->getMockBuilder('Dal\Db\TableGateway\TableGateway')->disableOriginalConstructor()->getMock();
         $m_table_gateway->expects($this->any())->method('update')->will($this->returnValue('result'));
@@ -433,7 +433,7 @@ class AbstractMapperTest extends PHPUnit_Framework_TestCase
 
         $m_abstract_mapper = $this->getMockBuilder('Dal\Mapper\AbstractMapper')->setMethods(null)->disableOriginalConstructor()->getMock();
         $this->assertFalse($reflection->getValue($m_abstract_mapper));
-        $out = $m_abstract_mapper->usePaginator();
+        $out = $m_abstract_mapper->usePaginator([]);
         $this->assertTrue($reflection->getValue($m_abstract_mapper));
 
         $reflection = $reflectionClass->getProperty('paginatorOptions');
@@ -470,7 +470,7 @@ class AbstractMapperTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(3, $paginatorOptions['p']);
     }
 
-    public function testInitPaginatorPDO()
+    /*public function testInitPaginatorPDO()
     {
         $reflectionClass = new \ReflectionClass('Dal\Mapper\AbstractMapper');
 
@@ -480,12 +480,14 @@ class AbstractMapperTest extends PHPUnit_Framework_TestCase
         $reflection->setAccessible(true);
         $reflection->setValue($m_abstract_mapper, array('n' => 10, 'p' => 2));
 
-        $reflection = $reflectionClass->getMethod('initPaginatorPDO');
+        $reflection = $reflectionClass->getMethod('initPaginator');
         $reflection->setAccessible(true);
 
         $array_params = array('select * fromm toto', array('id' => 1));
         $out = $reflection->invokeArgs($m_abstract_mapper, array($array_params));
 
+        
+        
         $reflection = $reflectionClass->getProperty('usePaginator');
         $reflection->setAccessible(true);
         $this->assertFalse($reflection->getValue($m_abstract_mapper));
@@ -499,7 +501,7 @@ class AbstractMapperTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals('select * fromm toto', $paginator[0]);
         $this->assertEquals(1, $paginator[1]['id']);
-    }
+    }*/
 
     public function testCountWithoutPagination()
     {
@@ -527,7 +529,7 @@ class AbstractMapperTest extends PHPUnit_Framework_TestCase
 
     public function testCountWithPaginationObjPaginator()
     {
-        $m_pagination = $this->getMockBuilder('\Zend\Paginator\Paginator')
+        $m_pagination = $this->getMockBuilder('\Dal\Paginator\Paginator')
                              ->setMethods(array('getTotalItemCount'))
                              ->disableOriginalConstructor()
                              ->getMock();
@@ -549,57 +551,12 @@ class AbstractMapperTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(6, $m_abstract_mapper->count());
     }
 
-    public function testCountWithPaginationArray()
-    {
-        $m_pagination = $this->getMockBuilder('\Zend\Paginator\Paginator')
-                             ->setMethods(array('getTotalItemCount'))
-                             ->disableOriginalConstructor()
-                             ->getMock();
-
-        $m_pagination->expects($this->any())
-                     ->method('getTotalItemCount')
-                     ->will($this->returnValue(6));
-
-        $m_table_gateway = $this->getMockBuilder('Dal\Db\TableGateway\TableGateway')
-                                ->setMethods(array('getAdapter', 'query', 'execute', 'current'))
-                                ->disableOriginalConstructor()
-                                ->getMock();
-
-        $m_table_gateway->expects($this->any())
-                        ->method('query')
-                        ->will($this->returnSelf());
-
-        $m_table_gateway->expects($this->any())
-                        ->method('getAdapter')
-                        ->will($this->returnSelf());
-
-        $m_table_gateway->expects($this->any())
-                        ->method('execute')
-                        ->will($this->returnSelf());
-
-        $m_table_gateway->expects($this->any())
-                        ->method('current')
-                        ->will($this->returnValue(array('count' => 7)));
-
-        $m_abstract_mapper = $this->getMockBuilder('\Dal\Mapper\AbstractMapper')
-                                  ->setMethods(null)
-                                  ->setConstructorArgs(array($m_table_gateway))
-                                  ->getMock();
-
-        $reflectionClass = new \ReflectionClass('Dal\Mapper\AbstractMapper');
-        $reflection = $reflectionClass->getProperty('paginator');
-        $reflection->setAccessible(true);
-        $reflection->setValue($m_abstract_mapper, array('Select * from', array('id' => 3)));
-
-        $this->assertEquals(7, $m_abstract_mapper->count());
-    }
-
     public function testInitPaginator()
     {
         $resultset = new ResultSet();
         $resultset->initialize(array(array('c' => 20)));
         // Mock SQL
-        $m_sql = $this->getMockBuilder('Zend\Db\Sql\Sql')
+        $m_sql = $this->getMockBuilder('Dal\Db\Sql\Sql')
                       ->setMethods(array('prepareStatementForSqlObject', 'execute', 'current'))
                       ->disableOriginalConstructor()
                       ->getMock();
@@ -645,7 +602,7 @@ class AbstractMapperTest extends PHPUnit_Framework_TestCase
         $resultset = new ResultSet();
         $resultset->initialize(array(array('c' => 20)));
         // Mock SQL
-        $m_sql = $this->getMockBuilder('Zend\Db\Sql\Sql')
+        $m_sql = $this->getMockBuilder('Dal\Db\Sql\Sql')
                       ->setMethods(array('prepareStatementForSqlObject', 'execute', 'current'))
                       ->disableOriginalConstructor()
                       ->getMock();
@@ -683,7 +640,7 @@ class AbstractMapperTest extends PHPUnit_Framework_TestCase
 
         $out = $reflection->invoke($m_abstract_mapper, $this->getMockBuilder('Dal\Db\Sql\Select')->getMock());
 
-        $this->assertEquals($out->toArray(), array());
+       $this->assertEquals($out->toArray(), $resultset->toArray());
     }
 
     public function testSetGetServiceLocator()

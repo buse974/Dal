@@ -1,5 +1,4 @@
 <?php
-
 namespace Dal\Model;
 
 use JsonSerializable;
@@ -10,25 +9,33 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 
 abstract class AbstractModel implements JsonSerializable, ServiceLocatorAwareInterface
 {
+
     /**
      * Prefix name.
      *
      * @var string
      */
     protected $prefix;
+
     protected $array_prefix = null;
+
     protected $parent_model;
+
     protected $service_locator = null;
+
     protected $all_parent;
+
     private $delimiter = '$';
+
     private $delimiter_opt = '!';
-    private $keep = true; 
+
+    private $keep = true;
 
     /**
      * Construct model with associate table name.
      *
-     * @param AbstractModel $parent_model
-     * @param string        $prefix
+     * @param AbstractModel $parent_model            
+     * @param string $prefix            
      */
     public function __construct(AbstractModel $parent_model = null, $prefix = null)
     {
@@ -43,7 +50,7 @@ abstract class AbstractModel implements JsonSerializable, ServiceLocatorAwareInt
     /**
      * Populate from an array.
      *
-     * @param array $data
+     * @param array $data            
      *
      * @return AbstractModel
      */
@@ -51,32 +58,35 @@ abstract class AbstractModel implements JsonSerializable, ServiceLocatorAwareInt
     {
         $hydrator = new ClassMethods();
         $formatted = [];
-        if(null !== $this->prefix) {
+        if (null !== $this->prefix) {
             $pr = $this->allParent();
             $eq = ($pr === $this->prefix);
             foreach ($data as $key => $value) {
                 $fkey = null;
                 if (0 === ($tmp = strpos($key, $this->prefix . $this->delimiter))) {
                     $fkey = substr($key, strlen($this->prefix . $this->delimiter));
-                } elseif ($eq===false && $tmp!==false && 0 === strpos($key, $pr . $this->delimiter)) {
+                } elseif ($eq === false && $tmp !== false && 0 === strpos($key, $pr . $this->delimiter)) {
                     $fkey = substr($key, strlen($pr . $this->delimiter));
-                } 
-                if (null!==$fkey && $hydrator->canBeHydrated($fkey, $this)) {
-                    $formatted[$fkey] = ($value===null) ? new IsNull() : $value;
+                }
+                if (null !== $fkey && $hydrator->canBeHydrated($fkey, $this)) {
+                    $formatted[$fkey] = ($value === null) ? new IsNull() : $value;
                     unset($data[$key]);
                 }
             }
         }
-        if(null===$this->prefix || empty($formatted)) {
+        if (null === $this->prefix || empty($formatted)) {
             foreach ($data as $key => $value) {
                 if ($hydrator->canBeHydrated($key, $this)) {
-                    $formatted[$key] = ($value===null) ? new IsNull() : $value;
+                    $formatted[$key] = ($value === null) ? new IsNull() : $value;
                     unset($data[$key]);
                 }
             }
         }
-        $hydrator->hydrate($formatted, $this);
-
+        
+        if(!empty($formatted)) {
+            $hydrator->hydrate($formatted, $this);
+        }
+         
         return $this;
     }
 
@@ -89,11 +99,11 @@ abstract class AbstractModel implements JsonSerializable, ServiceLocatorAwareInt
     {
         $hydrator = new ClassMethods();
         $vars = $hydrator->extract($this);
-
+        
         foreach ($vars as $key => &$value) {
             if ($value === null) {
                 unset($vars[$key]);
-            } elseif (is_object($value) && !$value instanceof \ArrayObject) {
+            } elseif (is_object($value) && ! $value instanceof \ArrayObject) {
                 if (method_exists($value, 'toArray')) {
                     $value = $value->toArray();
                     if (count($value) == 0) {
@@ -108,7 +118,7 @@ abstract class AbstractModel implements JsonSerializable, ServiceLocatorAwareInt
                 $vars[$key] = (int) $value;
             }
         }
-
+        
         return $vars;
     }
 
@@ -116,11 +126,11 @@ abstract class AbstractModel implements JsonSerializable, ServiceLocatorAwareInt
     {
         $hydrator = new ClassMethods();
         $vars = $hydrator->extract($this);
-
+        
         $predivar = [];
         foreach ($vars as $key => &$value) {
             if ($value instanceof \Zend\Db\Sql\Predicate\PredicateInterface) {
-                if(method_exists($value, 'setIdentifier')) {
+                if (method_exists($value, 'setIdentifier')) {
                     $value->setIdentifier($key);
                 }
                 $predivar[] = $value;
@@ -138,15 +148,15 @@ abstract class AbstractModel implements JsonSerializable, ServiceLocatorAwareInt
                 $vars[$key] = (int) $value;
             }
         }
-
+        
         return array_merge($vars, $predivar);
     }
-    
+
     public function toArrayCurrentNoPredicate()
     {
         $hydrator = new ClassMethods();
         $vars = $hydrator->extract($this);
-    
+        
         foreach ($vars as $key => &$value) {
             if ($value instanceof \Zend\Db\Sql\Predicate\IsNull) {
                 $vars[$key] = null;
@@ -156,14 +166,14 @@ abstract class AbstractModel implements JsonSerializable, ServiceLocatorAwareInt
                 $vars[$key] = (int) $value;
             }
         }
-    
+        
         return $vars;
     }
 
     public function allParent()
     {
-        if(null===$this->all_parent) {
-            $this->all_parent = (null !== $this->parent_model) ? $this->parent_model->allParent().'_'.$this->prefix : $this->prefix;
+        if (null === $this->all_parent) {
+            $this->all_parent = (null !== $this->parent_model) ? $this->parent_model->allParent() . '_' . $this->prefix : $this->prefix;
         }
         
         return $this->all_parent;
@@ -176,8 +186,7 @@ abstract class AbstractModel implements JsonSerializable, ServiceLocatorAwareInt
 
     protected function getParentArray()
     {
-        return (null !== $this->parent_model) ?
-             array_merge($this->parent_model->getParentArray(), array($this->prefix)) : array($this->prefix);
+        return (null !== $this->parent_model) ? array_merge($this->parent_model->getParentArray(), array($this->prefix)) : array($this->prefix);
     }
 
     /**
@@ -188,20 +197,22 @@ abstract class AbstractModel implements JsonSerializable, ServiceLocatorAwareInt
     protected function isRepeatRelational()
     {
         $is_repeat = false;
-
+        
         if (array_count_values($this->getParentArray())[$this->prefix] > 1) {
             $is_repeat = true;
         }
-
+        
         return $is_repeat;
     }
+
     /**
+     *
      * @see \Zend\ServiceManager\ServiceLocatorAwareInterface::setServiceLocator()
      */
     public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
     {
         $this->service_locator = $serviceLocator;
-
+        
         return $this;
     }
 
@@ -215,56 +226,57 @@ abstract class AbstractModel implements JsonSerializable, ServiceLocatorAwareInt
         if (null === $this->service_locator && null !== $this->parent_model) {
             $this->service_locator = $this->parent_model->getServiceLocator();
         }
-
+        
         return $this->service_locator;
     }
 
     /**
      * Set parent model.
      *
-     * @param AbstractModel $parent_model
+     * @param AbstractModel $parent_model            
      */
     public function setParentModel(AbstractModel $parent_model)
     {
         $this->parent_model = $parent_model;
-
+        
         return $this;
     }
 
     /**
      * Set prefix.
      *
-     * @param int $parent_model
+     * @param int $parent_model            
      */
     public function setPrefix($prefix)
     {
         if (null !== $prefix) {
             $this->prefix = $prefix;
         }
-
+        
         return $this;
     }
-    
+
     /**
      * Set array prefix.
      *
-     * @param integer array_prefix
+     * @param
+     *            integer array_prefix
      */
     public function setArrayPrefix($array_prefix)
     {
         if (null !== $array_prefix) {
             $this->array_prefix = $array_prefix;
         }
-    
+        
         return $this;
     }
 
     /**
      * return Model if needed.
      *
-     * @param string  $model
-     * @param array   $data
-     * @param string  $prefix
+     * @param string $model            
+     * @param array $data            
+     * @param string $prefix            
      *
      * @return AbstractModel|null
      */
@@ -272,22 +284,22 @@ abstract class AbstractModel implements JsonSerializable, ServiceLocatorAwareInt
     {
         $class = null;
         $name = (null !== $prefix) ? $prefix : substr($model, strlen(explode('_', $model)[0]) + 7);
-
+        
         foreach ($this->array_prefix as $k => $ap) {
-            if (strrpos($ap, $name) === (strlen($ap)-strlen($name))) {
+            if (strrpos($ap, $name) === (strlen($ap) - strlen($name))) {
                 unset($this->array_prefix[$k]);
                 $class = clone $this->getServiceLocator()->get($model);
                 $class->setPrefix($prefix);
                 $class->setArrayPrefix($this->array_prefix);
                 $class->setParentModel($this);
                 $class->exchangeArray($data);
-                if(!$class->Keep()) {
+                if (! $class->Keep()) {
                     return null;
                 }
                 break;
             }
         }
-
+        
         return $class;
     }
 
@@ -295,7 +307,7 @@ abstract class AbstractModel implements JsonSerializable, ServiceLocatorAwareInt
     {
         return $this->keep;
     }
-    
+
     /**
      * Convert to string.
      *
