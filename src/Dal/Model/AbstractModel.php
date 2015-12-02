@@ -6,6 +6,7 @@ use Dal\Stdlib\Hydrator\ClassMethods;
 use Zend\Db\Sql\Predicate\IsNull;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\Db\Sql\Predicate\IsNotNull;
 
 abstract class AbstractModel implements JsonSerializable, ServiceLocatorAwareInterface
 {
@@ -67,6 +68,16 @@ abstract class AbstractModel implements JsonSerializable, ServiceLocatorAwareInt
                     $fkey = substr($key, strlen($this->prefix . $this->delimiter));
                 } elseif ($eq === false && $tmp !== false && 0 === strpos($key, $pr . $this->delimiter)) {
                     $fkey = substr($key, strlen($pr . $this->delimiter));
+                } elseif (0 === ($tmp = strpos($key, $this->prefix . $this->delimiter_opt))) {
+                    $fkey = substr($key, strlen($this->prefix . $this->delimiter_opt));
+                    if($value === null) {
+                        $this->keep = false;
+                    }
+                } elseif ($eq === false && $tmp !== false && 0 === strpos($key, $pr . $this->delimiter_opt)) {
+                    $fkey = substr($key, strlen($pr . $this->delimiter_opt));
+                    if($value === null) {
+                        $this->keep = false;
+                    }
                 }
                 if (null !== $fkey && $hydrator->canBeHydrated($fkey, $this)) {
                     $formatted[$fkey] = ($value === null) ? new IsNull() : $value;
@@ -82,8 +93,7 @@ abstract class AbstractModel implements JsonSerializable, ServiceLocatorAwareInt
                 }
             }
         }
-        
-        if(!empty($formatted)) {
+        if(!empty($formatted) && $this->keep === true) {
             $hydrator->hydrate($formatted, $this);
         }
          
@@ -294,7 +304,7 @@ abstract class AbstractModel implements JsonSerializable, ServiceLocatorAwareInt
                 $class->setParentModel($this);
                 $class->exchangeArray($data);
                 if (! $class->Keep()) {
-                    return null;
+                    return new IsNull();
                 }
                 break;
             }
