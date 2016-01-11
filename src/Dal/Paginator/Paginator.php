@@ -143,18 +143,27 @@ class Paginator
             $query = $this->select[0];
             if ($this->s !== null && $this->c != null) {
                 // @TODO check choise AND or WHERE and insertion before ORDER LIMIT GROUPBY
-
                 $query = sprintf('%s AND %s %s %s', $query, $this->c, $o, $this->s);
             }
             $query = sprintf('%s LIMIT %s OFFSET %s', $query, $this->n, (($this->p - 1) * $this->n));
             $statement = $this->sql->getAdapter()->query($query, ADT::QUERY_MODE_PREPARE);
         } else {
             $select = clone $this->select;
-            $select->offset((($this->p - 1) * $this->n));
-            $select->limit($this->n);
-
             if ($this->s !== null && $this->c != null) {
-                $select->where(array($this->c.' '.$o.' ?' => $this->s));
+                $orderSelect = new Select();
+                $orderSelect->from(array('original_select' => $select))
+                    ->where(array($this->c.' '.$o.' ?' => $this->s))
+                    ->order(array($this->c => $this->o))
+                    ->offset((($this->p - 1) * $this->n))
+                    ->limit($this->n);
+                $finalSelect = new Select();
+                $finalSelect->from(array('order_select' => $orderSelect))
+                    ->order(array($this->c => 'ASC'));
+                
+                $select = $finalSelect;
+            } else {
+                $select->offset((($this->p - 1) * $this->n))
+                    ->limit($this->n);
             }
 
             $statement = $this->sql->prepareStatementForSqlObject($select);
