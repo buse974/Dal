@@ -148,7 +148,7 @@ class Paginator
 
                 $query = sprintf('%s AND %s %s %s', $query, $this->c, $o, $this->s);
             }
-            $query = sprintf('%s LIMIT %s OFFSET %s', $query, $this->n, (($this->p - 1) * $this->n));
+            $query = sprintf('%s LIMIT %d OFFSET %d', $query, $this->n, (($this->p - 1) * $this->n));
             $adt = $this->sql->getAdapter();
             
             $statement =$adt->query($query, $adt::QUERY_MODE_PREPARE);
