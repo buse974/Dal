@@ -10,6 +10,7 @@ use Zend\Db\Adapter\Adapter;
 use Zend\Db\Sql\Predicate\Between;
 use Zend\Db\Sql\Predicate\Expression;
 
+
 class Paginator
 {
     /**
@@ -121,7 +122,8 @@ class Paginator
 
         if (is_array($this->select)) {
             $query = sprintf('%s WHERE %s BETWEEN %s AND %s', $this->select[0], $this->c, $start_date, $end_date);
-            $statement = $this->sql->getAdapter()->query($query, ADT::QUERY_MODE_PREPARE);
+            $adt = $this->sql->getAdapter();
+            $statement = $adt->query($query, $adt::QUERY_MODE_PREPARE);
         } else {
             $select = clone $this->select;
             $select->where(new Between($this->c, $start_date, $end_date));
@@ -147,7 +149,8 @@ class Paginator
                 $query = sprintf('%s AND %s %s %s', $query, $this->c, $o, $this->s);
             }
             $query = sprintf('%s LIMIT %s OFFSET %s', $query, $this->n, (($this->p - 1) * $this->n));
-            $statement = $this->sql->getAdapter()->query($query, ADT::QUERY_MODE_PREPARE);
+            $adt = $this->sql->getAdapter();
+            $statement =$adt->query($query, $adt::QUERY_MODE_PREPARE);
         } else {
             $select = clone $this->select;
             $select->offset((($this->p - 1) * $this->n));
