@@ -150,6 +150,7 @@ class Paginator
             }
             $query = sprintf('%s LIMIT %s OFFSET %s', $query, $this->n, (($this->p - 1) * $this->n));
             $adt = $this->sql->getAdapter();
+            
             $statement =$adt->query($query, $adt::QUERY_MODE_PREPARE);
         } else {
             $select = clone $this->select;
@@ -180,20 +181,24 @@ class Paginator
         $param = null;
 
         if (is_array($this->select)) {
-            $select = $this->select[0];
-            $param = $this->select[1];
+           $select = $this->select[0];
+           $param = $this->select[1];
+           $adt = $this->sql->getAdapter();
+           
+           $statement =$adt->query(sprintf("SELECT COUNT(1) AS c FROM (%s) AS original_select",$select), $adt::QUERY_MODE_PREPARE);
         } else {
             $select = clone $this->select;
             $select->reset(Select::LIMIT);
             $select->reset(Select::OFFSET);
             $select->reset(Select::ORDER);
+            
+            $countSelect = new Select();
+            $countSelect->columns(array('c' => new Expression('COUNT(1)')));
+            $countSelect->from(array('original_select' => $select));
+            
+            $statement = $this->sql->prepareStatementForSqlObject($countSelect);
         }
 
-        $countSelect = new Select();
-        $countSelect->columns(array('c' => new Expression('COUNT(1)')));
-        $countSelect->from(array('original_select' => $select));
-
-        $statement = $this->sql->prepareStatementForSqlObject($countSelect);
         $result = $statement->execute($param);
         $row = $result->current();
 
