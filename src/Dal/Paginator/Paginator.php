@@ -154,7 +154,7 @@ class Paginator
         } else {
             $countSelect = new Select();
             $countSelect->columns(array('*'));
-            $countSelect->from(array('original_select' => $select));
+            $countSelect->from(array('original_select' => $this->select));
             $countSelect->offset((($this->p - 1) * $this->n));
             $countSelect->limit($this->n);
             
