@@ -283,9 +283,8 @@ class Paginator
                 if (is_int($ok) && is_string($ov)) {
                     $tmp = explode(' ', $ov);
                     $ok = $tmp[0];
-                    $ov = $tmp[1]; 
+                    $ov = (count(2)) ? $tmp[1] : 'ASC';
                 }
-                
                 if(!is_int($ok)) {
                    $tmp = $this->checkColumns($ok, $ov);
                    if ($tmp !== false) {
