@@ -280,15 +280,17 @@ class Paginator
             $ords = $this->select->getRawState(Select::ORDER);
             $fords = [];
             foreach ($ords as $ok => $ov) {
-                if (is_int($ok)) {
+                if (is_int($ok) && is_string($ov)) {
                     $tmp = explode(' ', $ov);
                     $ok = $tmp[0];
-                    $ov = $tmp[1];
+                    $ov = $tmp[1]; 
                 }
                 
-                $tmp = $this->checkColumns($ok, $ov);
-                if ($tmp !== false) {
-                    $fords[$tmp] = $ov;
+                if(!is_int($ok)) {
+                   $tmp = $this->checkColumns($ok, $ov);
+                   if ($tmp !== false) {
+                       $fords[$tmp] = $ov;
+                   }
                 }
             }
             
