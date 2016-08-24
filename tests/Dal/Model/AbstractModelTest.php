@@ -73,21 +73,9 @@ class AbstractModelTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($mock_model->allParent(), 'parent_prefix_unprefix');
     }
 
-    public function testGetServiceLocatorParent()
-    {
-        $mock_service_locator = $this->getMockForAbstractClass('\Zend\ServiceManager\ServiceLocatorInterface');
-
-        $mock_model_parent = $this->getMockForAbstractClass('\Dal\Model\AbstractModel', array(null, 'parent_prefix'), 'parentModel', true, true, true);
-        $mock_model_parent->setServiceLocator($mock_service_locator);
-
-        $mock_model = $this->getMockForAbstractClass('\Dal\Model\AbstractModel', array($mock_model_parent, 'unprefix'), '', true, true, true);
-
-        $this->assertEquals($mock_service_locator, $mock_model->getServiceLocator());
-    }
-
     public function testToArray()
     {
-        $m_array = $this->getMockBuilder('array_mock')
+        $m_array = $this->getMockBuilder('stdClass')
                         ->setMethods(array('toArray'))
                         ->getMock();
 

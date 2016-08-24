@@ -52,8 +52,8 @@ class SelectTest extends PHPUnit_Framework_TestCase
     public function testJoin()
     {
         $select = $this->getMockBuilder('Dal\Db\Sql\Select')
-                       ->disableOriginalConstructor()
-                       ->setMethods(array('aliasing'))
+                       ->enableProxyingToOriginalMethods()
+                       ->setMethods(['aliasing'])
                        ->getMock();
 
         $select->expects($this->once())

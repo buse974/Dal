@@ -2,6 +2,9 @@
 
 namespace Mock\Mapper;
 
-class Table
+use Dal\Mapper\AbstractMapper;
+
+class Table extends AbstractMapper
 {
+
 }

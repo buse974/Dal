@@ -75,12 +75,14 @@ class ResultSet extends BaseResultSet implements JsonSerializable
     public function toArray(array $indices = array(), $unset_indice = false)
     {
         $return = array();
+
         foreach ($this as $row) {
             if (method_exists($row, 'toArray')) {
                 $row = $row->toArray();
             } elseif (method_exists($row, 'getArrayCopy')) {
                 $row = $row->getArrayCopy();
             }
+ 
             if (count($indices) > 0) {
                 $buffer = &$return;
                 foreach ($indices as $indice) {
@@ -157,7 +159,16 @@ class ResultSet extends BaseResultSet implements JsonSerializable
      */
     public function current()
     {
-        $data = \Zend\Db\ResultSet\AbstractResultSet::current();
+        if ($this->buffer === null) {
+            $this->buffer = -2; // implicitly disable buffering from here on
+        } elseif (is_array($this->buffer) && isset($this->buffer[$this->position])) {
+            return $this->buffer[$this->position];
+        }
+        $data = $this->dataSource->current();
+        
+        if (is_array($this->buffer)) {
+            $this->buffer[$this->position] = $data;
+        }
         
         if ($this->returnType === self::TYPE_ARRAYOBJECT && is_array($data)) {
             $ao = clone $this->arrayObjectPrototype;

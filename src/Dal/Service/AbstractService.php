@@ -2,12 +2,9 @@
 
 namespace Dal\Service;
 
-use Zend\ServiceManager\ServiceLocatorAwareInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
-
-abstract class AbstractService implements ServiceLocatorAwareInterface
+abstract class AbstractService
 {
-    protected $serviceLocator;
+    protected $container;
     protected $mapper;
     protected $model;
 
@@ -19,6 +16,19 @@ abstract class AbstractService implements ServiceLocatorAwareInterface
         }
     }
 
+    /**
+     * Set container
+     *
+     * @param \Interop\Container\ContainerInterface $container
+     * @return \Dal\Model\AbstractModel
+     */
+    public function setContainer($container)
+    {
+        $this->container = $container;
+    
+        return $this;
+    }
+    
     public function usePaginator(array $options = array())
     {
         $this->getMapper()->usePaginator($options);
@@ -27,30 +37,22 @@ abstract class AbstractService implements ServiceLocatorAwareInterface
     }
 
     /**
+     * Get Mapper
+     * 
      * @return \Dal\Mapper\AbstractMapper
      */
     public function getMapper()
     {
-        return $this->getServiceLocator()->get($this->mapper);
+        return $this->container->get($this->mapper);
     }
 
     /**
+     * Get A Clone of Model
+     * 
      * @return \Dal\Model\AbstractModel
      */
     public function getModel()
     {
-        return clone $this->getServiceLocator()->get($this->model);
-    }
-
-    public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
-    {
-        $this->serviceLocator = $serviceLocator;
-
-        return $this;
-    }
-
-    public function getServiceLocator()
-    {
-        return $this->serviceLocator;
+        return clone $this->container->get($this->model);
     }
 }

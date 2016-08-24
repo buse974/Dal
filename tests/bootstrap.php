@@ -31,12 +31,8 @@ class bootstrap
     protected static function initAutoloader()
     {
         $vendorPath = static::findParentPath('vendor');
-
         $loader = include $vendorPath.'/autoload.php';
-        //$vendorPath = static::findParentPath('vendor');
-        //$zf2Path = $vendorPath.'/zendframework/zendframework/library/';
 
-        //include $zf2Path . '/Zend/Loader/AutoloaderFactory.php';
         \Zend\Loader\AutoloaderFactory::factory(array(
             'Zend\Loader\StandardAutoloader' => array(
                'autoregister_zf' => true,
@@ -44,9 +40,12 @@ class bootstrap
             ),
         ));
 
-        $serviceManager = new ServiceManager(new ServiceManagerConfig());
+        $smConfig = new ServiceManagerConfig([]);
+        $serviceManager = new ServiceManager();
+        $smConfig->configureServiceManager($serviceManager);
         $serviceManager->setService('ApplicationConfig', include __DIR__.'/config/application.config.php');
         $serviceManager->get('ModuleManager')->loadModules();
+        
         static::$serviceManager = $serviceManager;
     }
 

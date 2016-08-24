@@ -1,49 +1,57 @@
 <?php
-
+/**
+ * 
+ * TagnCar (http://tagncar.com)
+ *
+ * ModelAbstractFactory
+ *
+ */
 namespace Dal\AbstractFactory;
 
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Interop\Container\ContainerInterface;
 
+/**
+ * Class ModelAbstractFactory
+ */
 class ModelAbstractFactory extends AbstractFactory
 {
+
     /**
-     * Determine if we can create a service with name.
-     *
-     * @param ServiceLocatorInterface $serviceLocator
-     * @param $name
-     * @param $requestedName
-     *
-     * @return bool
+     * Determine if we can create a Model with name
+     * 
+     * {@inheritDoc}
+     * @see \Zend\ServiceManager\Factory\AbstractFactoryInterface::canCreate()
      */
-    public function canCreateServiceWithName(ServiceLocatorInterface $serviceLocator, $name, $requestedName)
+    public function canCreate(ContainerInterface $container, $requestedName)
     {
-        $namespace = $this->getConfig($serviceLocator)['namespace'];
+        $namespace = $this->getConfig($container)['namespace'];
         $ar = explode('_', $requestedName);
 
         return (count($ar) >= 2 && array_key_exists($ar[0], $namespace) && $ar[1] === 'model');
     }
-
+    
     /**
-     * Create service with name.
-     *
-     * @param ServiceLocatorInterface $serviceLocator
-     * @param $name
-     * @param $requestedName
-     *
-     * @return \Dms\ServiceFactory\CodingFactory
+     * Create Model with name
+     * 
+     * {@inheritDoc}
+     * @see \Zend\ServiceManager\Factory\FactoryInterface::__invoke()
      */
-    public function createServiceWithName(ServiceLocatorInterface $serviceLocator, $name, $requestedName)
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
         $prefix = current(explode('_', $requestedName));
-        $namespace = $this->getConfig($serviceLocator)['namespace'][$prefix];
+        $namespace = $this->getConfig($container)['namespace'][$prefix];
         $name_table = $this->toCamelCase(substr($requestedName, strlen($prefix) + 7));
-
+        
         $class = $namespace['model'].'\\'.$name_table;
-
+        
         if (!class_exists($class)) {
             throw new \Exception('Class does not exist : '.$namespace['model'].'\\'.$name_table);
         }
-
-        return new $class();
+        
+        $obj = new $class();
+        $obj->setContainer($container);
+        
+        return $obj;
     }
+    
 }

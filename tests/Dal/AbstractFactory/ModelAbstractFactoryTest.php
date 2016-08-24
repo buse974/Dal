@@ -19,7 +19,7 @@ class ModelAbstractFactoryTest extends AbstractHttpControllerTestCase
     {
         $model_abstract_factory = new ModelAbstractFactory();
         $serviceManager = $this->getApplicationServiceLocator();
-        $out = $model_abstract_factory->canCreateServiceWithName($serviceManager, 'dal-test_model_table', 'dal-test_model_table');
+        $out = $model_abstract_factory->canCreate($serviceManager, 'dal-test_model_table', 'dal-test_model_table');
 
         $this->assertTrue($out);
     }
@@ -28,7 +28,7 @@ class ModelAbstractFactoryTest extends AbstractHttpControllerTestCase
     {
         $model_abstract_factory = new ModelAbstractFactory();
         $serviceManager = $this->getApplicationServiceLocator();
-        $out = $model_abstract_factory->createServiceWithName($serviceManager, 'dal-test_model_table', 'dal-test_model_table');
+        $out = $model_abstract_factory->__invoke($serviceManager, 'dal-test_model_table');
 
         $this->assertInstanceOf('Mock\Model\Table', $out);
     }
@@ -41,7 +41,7 @@ class ModelAbstractFactoryTest extends AbstractHttpControllerTestCase
 
         $model_abstract_factory = new ModelAbstractFactory();
         $serviceManager = $this->getApplicationServiceLocator();
-        $out = $model_abstract_factory->createServiceWithName($serviceManager, 'dal-test_model_table_no_exist', 'dal-test_model_table_no_exist');
+        $out = $model_abstract_factory->__invoke($serviceManager, 'dal-test_model_table_no_exist');
 
         $this->assertInstanceOf('Mock\Model\Table', $out);
     }

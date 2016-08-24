@@ -2,6 +2,8 @@
 
 namespace Mock\Model;
 
-class Table
+use Dal\Model\AbstractModel;
+
+class Table extends AbstractModel
 {
 }

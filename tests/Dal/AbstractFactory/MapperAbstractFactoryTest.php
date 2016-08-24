@@ -19,7 +19,8 @@ class MapperAbstractFactoryTest extends AbstractHttpControllerTestCase
     {
         $model_abstract_factory = new MapperAbstractFactory();
         $serviceManager = $this->getApplicationServiceLocator();
-        $out = $model_abstract_factory->canCreateServiceWithName($serviceManager, 'dal-test_mapper_table', 'dal-test_mapper_table');
+
+        $out = $model_abstract_factory->canCreate($serviceManager, 'dal-test_mapper_table', 'dal-test_mapper_table');
 
         $this->assertTrue($out);
     }
@@ -30,7 +31,7 @@ class MapperAbstractFactoryTest extends AbstractHttpControllerTestCase
         $m_adapter->expects($this->any())->method('getPlatform')->will($this->returnSelf());
         $m_adapter->expects($this->any())->method('getName')->will($this->returnValue('mysql'));
 
-        $m_model = $this->getMockBuilder('Mock\Model')->setMethods(array('exchangeArray'))->getMock();
+        $m_model = $this->getMockBuilder('Dal\Model\AbstractModel')->setMethods(array('exchangeArray', 'setContainer'))->getMock();
         $m_model->expects($this->any())->method('exchangeArray')->will($this->returnSelf());
 
         $serviceManager = $this->getApplicationServiceLocator();
@@ -39,8 +40,8 @@ class MapperAbstractFactoryTest extends AbstractHttpControllerTestCase
         $serviceManager->setService('dal-test_model_table', $m_model);
 
         $model_abstract_factory = new MapperAbstractFactory();
-        $serviceManager = $this->getApplicationServiceLocator();
-        $out = $model_abstract_factory->createServiceWithName($serviceManager, 'dal-test_mapper_table', 'dal-test_mapper_table');
+        $container = $this->getApplicationServiceLocator();
+        $out = $model_abstract_factory->__invoke($container, 'dal-test_mapper_table');
 
         $this->assertInstanceOf('Mock\Mapper\Table', $out);
     }

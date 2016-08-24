@@ -9,9 +9,12 @@ class ClassMethodsTest extends PHPUnit_Framework_TestCase
 {
     public function testextract()
     {
-        $mock = $this->getMock('\stdClass', array('getToto', 'getTata'));
-        $mock->expects($this->any())->method('getToto')->will($this->returnValue('vtoto'));
-        $mock->expects($this->any())->method('getTata')->will($this->returnValue('vtata'));
+        $mock = $this->getMockBuilder('stdClass')
+            ->setMethods(['getToto', 'getTata'])
+            ->getMock();
+        
+            $mock->expects($this->any())->method('getToto')->will($this->returnValue('vtoto'));
+            $mock->expects($this->any())->method('getTata')->will($this->returnValue('vtata'));
 
         $classmethode = new ClassMethods();
         $out = $classmethode->extract($mock);
@@ -26,7 +29,10 @@ class ClassMethodsTest extends PHPUnit_Framework_TestCase
     {
         $datas = array('toto' => 'vtoto', 'tata' => 'vtata');
 
-        $mock = $this->getMock('\stdClass', array('setToto', 'setTata'));
+        $mock = $this->getMockBuilder('stdClass')
+            ->setMethods(['setToto', 'setTata'])
+            ->getMock();
+        
         $mock->expects($this->any())->method('setToto')->with($this->equalTo('vtoto'))->will($this->returnSelf());
         $mock->expects($this->any())->method('setTata')->with($this->equalTo('vtata'))->will($this->returnSelf());
 

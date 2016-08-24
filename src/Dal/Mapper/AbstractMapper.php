@@ -4,12 +4,10 @@ namespace Dal\Mapper;
 
 use Dal\Db\Sql\Select;
 use Dal\Db\TableGateway\TableGateway;
-use Zend\ServiceManager\ServiceLocatorAwareInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
 use Dal\Model\AbstractModel;
 use Dal\Paginator\Paginator;
 
-abstract class AbstractMapper implements ServiceLocatorAwareInterface
+abstract class AbstractMapper
 {
     /**
      * @var \Dal\Db\TableGateway\TableGateway
@@ -18,8 +16,7 @@ abstract class AbstractMapper implements ServiceLocatorAwareInterface
     protected $paginator;
     protected $paginatorOptions = array();
     protected $usePaginator = false;
-    protected $serviceLocator;
-
+    protected $container;
     /**
      * @var \Dal\Db\ResultSet\ResultSet
      */
@@ -377,22 +374,16 @@ abstract class AbstractMapper implements ServiceLocatorAwareInterface
     }
 
     /**
-     * @see \Zend\ServiceManager\ServiceLocatorAwareInterface::setServiceLocator()
+     * Set container
+     *
+     * @param \Interop\Container\ContainerInterface $container
+     * @return \Dal\Model\AbstractModel
      */
-    public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
+    public function setContainer($container)
     {
-        $this->serviceLocator = $serviceLocator;
-
+        $this->container = $container;
+    
         return $this;
     }
-
-    /**
-     * Get service locator.
-     *
-     * @return ServiceLocatorInterface
-     */
-    public function getServiceLocator()
-    {
-        return $this->serviceLocator;
-    }
+    
 }

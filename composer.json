@@ -1,6 +1,6 @@
 {
   "name": "buse974/dal",
-  "description": "Data Access Layer for ZF2",
+  "description": "Data Access Layer for ZF3",
   "type": "module",
   "homepage": "https://github.com/buse974/Dal",
   "license": "MIT",
@@ -11,8 +11,8 @@
     }
   ],
   "require": {
-    "php": ">=5.4",
-    "zendframework/zendframework": "~2.0||~3.0"
+    "php": ">=5.5",
+    "zendframework/zendframework": "~3.0"
   },
   "require-dev" : {
     "satooshi/php-coveralls": "dev-master",

@@ -4,11 +4,9 @@ namespace Dal\Model;
 use JsonSerializable;
 use Dal\Stdlib\Hydrator\ClassMethods;
 use Zend\Db\Sql\Predicate\IsNull;
-use Zend\ServiceManager\ServiceLocatorAwareInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
-use Zend\Db\Sql\Predicate\IsNotNull;
+use Interop\Container\ContainerInterface;
 
-abstract class AbstractModel implements JsonSerializable, ServiceLocatorAwareInterface
+abstract class AbstractModel implements JsonSerializable
 {
 
     /**
@@ -25,6 +23,8 @@ abstract class AbstractModel implements JsonSerializable, ServiceLocatorAwareInt
     protected $service_locator = null;
 
     protected $all_parent;
+    
+    protected $container;
 
     private $delimiter = '$';
 
@@ -33,10 +33,10 @@ abstract class AbstractModel implements JsonSerializable, ServiceLocatorAwareInt
     private $keep = true;
 
     /**
-     * Construct model with associate table name.
+     * Construct model with associate table name
      *
-     * @param AbstractModel $parent_model            
-     * @param string $prefix            
+     * @param AbstractModel $parent_model
+     * @param string $prefix
      */
     public function __construct(AbstractModel $parent_model = null, $prefix = null)
     {
@@ -216,31 +216,6 @@ abstract class AbstractModel implements JsonSerializable, ServiceLocatorAwareInt
     }
 
     /**
-     *
-     * @see \Zend\ServiceManager\ServiceLocatorAwareInterface::setServiceLocator()
-     */
-    public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
-    {
-        $this->service_locator = $serviceLocator;
-        
-        return $this;
-    }
-
-    /**
-     * Get service locator.
-     *
-     * @return ServiceLocatorInterface
-     */
-    public function getServiceLocator()
-    {
-        if (null === $this->service_locator && null !== $this->parent_model) {
-            $this->service_locator = $this->parent_model->getServiceLocator();
-        }
-        
-        return $this->service_locator;
-    }
-
-    /**
      * Set parent model.
      *
      * @param AbstractModel $parent_model            
@@ -298,7 +273,7 @@ abstract class AbstractModel implements JsonSerializable, ServiceLocatorAwareInt
         foreach ($this->array_prefix as $k => $ap) {
             if (strrpos($ap, $name) === (strlen($ap) - strlen($name))) {
                 unset($this->array_prefix[$k]);
-                $class = clone $this->getServiceLocator()->get($model);
+                $class = clone $this->container->get($model);
                 $class->setPrefix($prefix);
                 $class->setArrayPrefix($this->array_prefix);
                 $class->setParentModel($this);
@@ -318,6 +293,19 @@ abstract class AbstractModel implements JsonSerializable, ServiceLocatorAwareInt
         return $this->keep;
     }
 
+    /**
+     * Set container 
+     * 
+     * @param \Interop\Container\ContainerInterface $container
+     * @return \Dal\Model\AbstractModel
+     */
+    public function setContainer($container)
+    {
+        $this->container = $container;
+    
+        return $this;
+    }
+    
     /**
      * Convert to string.
      *
