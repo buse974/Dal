@@ -76,7 +76,7 @@ class Paginator
      *
      * @var string
      */
-    protected $o;
+    protected $o = [];
 
     /**
      *
@@ -258,12 +258,11 @@ class Paginator
         if (null !== $this->c && is_array($this->c)) {
             $co = (reset($this->c) === 'ASC' || reset($this->c) === '>') ? '>' : '<';
             $cc = key($this->c);
-            $this->o = null;
         } else 
             if (null !== $this->c && ! is_array($this->c)) {
                 $co = ($this->o === 'ASC' || $this->o === '>') ? '>' : '<';
                 $cc = $this->c;
-                $this->o = null;
+                $this->o = [];
             }
         
         if (is_array($this->select)) {
@@ -277,7 +276,7 @@ class Paginator
             
             $statement = $adt->query($query, $adt::QUERY_MODE_PREPARE);
         } else {
-            $ords = $this->select->getRawState(Select::ORDER);
+            $ords = $this->select->getRawState(Select::ORDER) + $this->o;
             $fords = [];
             foreach ($ords as $ok => $ov) {
                 if (is_int($ok) && is_string($ov)) {
