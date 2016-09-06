@@ -301,7 +301,7 @@ abstract class AbstractMapper
         $this->paginatorOptions['d'] = (isset($options['d'])) ? $options['d'] : null;
         $this->paginatorOptions['c'] = (isset($options['c'])) ? $options['c'] : null;
         $this->paginatorOptions['n'] = (isset($options['n'])) ? $options['n'] : 10;
-        $this->paginatorOptions['o'] = (isset($options['o'])) ? $options['o'] : 'DESC';
+        $this->paginatorOptions['o'] = (isset($options['o'])) ? $options['o'] : [];
         $this->paginatorOptions['p'] = (isset($options['p'])) ? $options['p'] : 1;
 
         return $this;
