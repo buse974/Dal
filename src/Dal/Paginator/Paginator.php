@@ -276,19 +276,35 @@ class Paginator
             
             $statement = $adt->query($query, $adt::QUERY_MODE_PREPARE);
         } else {
+            $table = $this->select->getRawState(Select::TABLE);
+            $cols = $this->select->getRawState(Select::COLUMNS);
             $ords = $this->select->getRawState(Select::ORDER) + $this->o;
             $fords = [];
-            foreach ($ords as $ok => $ov) {
-                if (is_int($ok) && is_string($ov)) {
-                    $tmp = explode(' ', $ov);
-                    $ok = $tmp[0];
-                    $ov = (count($tmp) === 2) ? $tmp[1] : 'ASC';
+            
+            if (count($cols) === 1 && reset($cols) === '*') {
+                foreach ($ords as $ok => $ov) {
+                    if(strpos($ok, '.') === false) {
+                        $fords[$ok] = $ov;
+                    } else {
+                        $tmp = explode('.', $ok);
+                        if($tmp[0] === $tmp) {
+                            $fords[$tmp[1]] = $ov;
+                        }
+                    }
                 }
-                if(!is_int($ok)) {
-                   $tmp = $this->checkColumns($ok, $ov);
-                   if ($tmp !== false) {
-                       $fords[$tmp] = $ov;
-                   }
+            } else {
+                foreach ($ords as $ok => $ov) {
+                    if (is_int($ok) && is_string($ov)) {
+                        $tmp = explode(' ', $ov);
+                        $ok = $tmp[0];
+                        $ov = (count($tmp) === 2) ? $tmp[1] : 'ASC';
+                    }
+                    if(!is_int($ok)) {
+                       $tmp = $this->checkColumns($ok, $table, $cols);
+                       if ($tmp !== false) {
+                           $fords[$tmp] = $ov;
+                       }
+                    }
                 }
             }
             
@@ -296,7 +312,7 @@ class Paginator
             $Select->columns(array('*'));
             $Select->from(array('original_select' => $this->select));
             if (! empty($cc)) {
-                $cc = $this->checkColumns($cc);
+                $cc = $this->checkColumns($cc, $table, $cols);
                 if ($cc !== false) {
                     $Select->where(array($cc . ' ' . $co . ' ?' => $this->s));
                 }
@@ -357,11 +373,9 @@ class Paginator
      * @param string $ok            
      * @return array
      */
-    private function checkColumns($ok)
+    private function checkColumns($ok, $table, $cols)
     {
         $fords = false;
-        $table = $this->select->getRawState(Select::TABLE);
-        $cols = $this->select->getRawState(Select::COLUMNS);
         
         foreach ($cols as $ck => $cv) {
             if ($cv instanceof Expression || is_string($cv)) {
