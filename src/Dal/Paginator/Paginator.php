@@ -287,7 +287,7 @@ class Paginator
                         $fords[$ok] = $ov;
                     } else {
                         $tmp = explode('.', $ok);
-                        if($tmp[0] === $tmp) {
+                        if($tmp[0] === $table) {
                             $fords[$tmp[1]] = $ov;
                         }
                     }
@@ -312,7 +312,15 @@ class Paginator
             $Select->columns(array('*'));
             $Select->from(array('original_select' => $this->select));
             if (! empty($cc)) {
-                $cc = $this->checkColumns($cc, $table, $cols);
+                if (count($cols) === 1 && reset($cols) === '*') {
+                    if(strpos($cc, '.') !== false) {
+                        $tmp = explode('.', $ok);
+                        $cc = ($tmp[0] === $table) ? $tmp[1] : false;
+                    }
+                } else {
+                    $cc = $this->checkColumns($cc, $table, $cols);
+                }
+                
                 if ($cc !== false) {
                     $Select->where(array($cc . ' ' . $co . ' ?' => $this->s));
                 }
