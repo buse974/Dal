@@ -386,7 +386,7 @@ class Paginator
         $fords = false;
         
         foreach ($cols as $ck => $cv) {
-            if ($cv instanceof Expression || is_string($cv)) {
+            if ($cv instanceof Expression || $cv instanceof Select || is_string($cv)) {
                 if ($ok === $ck) {
                     $fords = $ok;
                     break;
