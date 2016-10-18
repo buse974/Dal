@@ -121,6 +121,8 @@ abstract class AbstractModel implements JsonSerializable
                     }
                 } elseif ($value instanceof IsNull) {
                     $vars[$key] = null;
+                } elseif ($value instanceof \stdClass) {
+                    $vars[$key] = new \stdClass();
                 } else {
                     unset($vars[$key]);
                 }
