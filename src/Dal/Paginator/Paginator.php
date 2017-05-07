@@ -284,6 +284,7 @@ class Paginator
 
             foreach ($joins as $value) {
               if(!empty($value['columns'])) {
+                //syslog(1, json_encode($value['name']));
                 $cols = array_merge($cols,$value['columns']);
               }
             }
@@ -397,14 +398,9 @@ class Paginator
                 if ($ok === $ck) {
                     $fords = $ok;
                     break;
-                } elseif ($cv instanceof Expression && $ok === $cv->getExpression()) {
+                } elseif (($cv instanceof Expression && $ok === $cv->getExpression()) || (str_replace('.','$',$ok) === $ck) || (is_string($cv) && ($ok == $table . '.' . $cv) ) ) {
                     $fords = $ck;
                     break;
-                } elseif (is_string($cv)) {
-                    if ($ok == $table . '.' . $cv) {
-                        $fords = $ck;
-                        break;
-                    }
                 }
             }
         }
