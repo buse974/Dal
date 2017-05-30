@@ -15,7 +15,7 @@ use Dal\Db\Sql\Select;
 use Zend\Db\ResultSet\ResultSetInterface;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\Sql\Predicate\Between;
-use Zend\Db\Sql\Predicate\Expression;
+use Zend\Db\Sql\Expression;
 
 /**
  * Class Paginator
@@ -284,7 +284,6 @@ class Paginator
 
             foreach ($joins as $value) {
               if(!empty($value['columns'])) {
-                //syslog(1, json_encode($value['name']));
                 $cols = array_merge($cols,$value['columns']);
               }
             }
@@ -394,15 +393,18 @@ class Paginator
     {
         $fords = false;
         foreach ($cols as $ck => $cv) {
-            if ($cv instanceof Expression || $cv instanceof Select || is_string($cv)) {
-                if ($ok === $ck) {
-                    $fords = $ok;
-                    break;
-                } elseif (($cv instanceof Expression && $ok === $cv->getExpression()) || (str_replace('.','$',$ok) === $ck) || (is_string($cv) && ($ok == $table . '.' . $cv) ) ) {
-                    $fords = $ck;
-                    break;
-                }
+          if ($cv instanceof Expression || $cv instanceof Select || is_string($cv)) {
+            if ($ok === $ck) {
+                $fords = $ok;
+                break;
+            } elseif (
+              ($cv instanceof Expression && $ok === $cv->getExpression()) ||
+              (str_replace('.','$',$ok) === $ck) ||
+              (is_string($cv) && ($ok == $table . '.' . $cv) ) ) {
+                $fords = $ck;
+                break;
             }
+          }
         }
 
         return $fords;
