@@ -279,7 +279,7 @@ class Paginator
             $table = $this->select->getRawState(Select::TABLE);
             $cols = $this->select->getRawState(Select::COLUMNS);
             $joins = $this->select->getRawState(Select::JOINS);
-            $ords = $this->select->getRawState(Select::ORDER) + $this->o;
+            $ords = array_merge($this->o, $this->select->getRawState(Select::ORDER));
             $fords = [];
 
             foreach ($joins as $value) {
