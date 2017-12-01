@@ -252,9 +252,6 @@ class Paginator
      */
     public function getStatementPagination()
     {
-        if (null === $this->n) {
-            $this->n = 10;
-        }
         if (null !== $this->c && is_array($this->c)) {
             $co = (reset($this->c) === 'ASC' || reset($this->c) === '>') ? '>' : '<';
             $cc = key($this->c);
@@ -271,7 +268,10 @@ class Paginator
                 // @TODO check choise AND or WHERE and insertion before ORDER LIMIT GROUPBY
                 $query = sprintf('%s AND %s %s %s', $query, $cc, $co, $this->s);
             }
-            $query = sprintf('%s LIMIT %d OFFSET %d', $query, $this->n, (($this->p - 1) * $this->n));
+            
+            if(null !== $this->p && null !== $this->n) {
+                $query = sprintf('%s LIMIT %d OFFSET %d', $query, $this->n, (($this->p - 1) * $this->n));
+            }
             $adt = $this->sql->getAdapter();
 
             $statement = $adt->query($query, $adt::QUERY_MODE_PREPARE);
@@ -333,8 +333,11 @@ class Paginator
                     $Select->where(array($cc . ' ' . $co . ' ?' => $this->s));
                 }
             }
-            $Select->offset((($this->p - 1) * $this->n));
-            $Select->limit($this->n);
+            
+            if(null !== $this->p && null !== $this->n) {
+                $Select->offset((($this->p - 1) * $this->n));
+                $Select->limit($this->n);
+            }
             $Select->order($fords);
 
             $statement = $this->sql->prepareStatementForSqlObject($Select);
