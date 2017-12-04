@@ -14,7 +14,7 @@ abstract class AbstractMapper
      */
     protected $tableGateway;
     protected $paginator;
-    protected $paginatorOptions = array();
+    protected $paginatorOptions = [];
     protected $usePaginator = false;
     protected $container;
     /**
@@ -300,9 +300,9 @@ abstract class AbstractMapper
         $this->paginatorOptions['s'] = (isset($options['s'])) ? $options['s'] : null;
         $this->paginatorOptions['d'] = (isset($options['d'])) ? $options['d'] : null;
         $this->paginatorOptions['c'] = (isset($options['c'])) ? $options['c'] : null;
-        $this->paginatorOptions['n'] = (isset($options['n'])) ? $options['n'] : null;
+        $this->paginatorOptions['n'] = (isset($options['n'])) ? $options['n'] : (isset($options['p']) ? 10 : null );
         $this->paginatorOptions['o'] = (isset($options['o'])) ? $options['o'] : [];
-        $this->paginatorOptions['p'] = (isset($options['p'])) ? $options['p'] : null;
+        $this->paginatorOptions['p'] = (isset($options['p'])) ? $options['p'] : (isset($options['n']) ? 1 : null );
 
         return $this;
     }
