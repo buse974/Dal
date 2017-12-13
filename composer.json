@@ -16,7 +16,7 @@
   },
   "require-dev" : {
     "satooshi/php-coveralls": "dev-master",
-    "fabpot/php-cs-fixer":"*",
+    "friendsofphp/php-cs-fixer" : "*",
     "phpunit/phpunit" : ">=4"
   },
   "autoload": {
