@@ -33,10 +33,10 @@ class ConfigProvider
     {
         return [
             'abstract_factories' => [
-                Dal\AbstractFactory\MapperAbstractFactory::class,
-                Dal\AbstractFactory\ModelAbstractFactory::class ,
-                Dal\AbstractFactory\ModelBaseAbstractFactory::class,
-                Dal\AbstractFactory\ServiceAbstractFactory::class,
+                AbstractFactory\MapperAbstractFactory::class,
+                AbstractFactory\ModelAbstractFactory::class ,
+                AbstractFactory\ModelBaseAbstractFactory::class,
+                AbstractFactory\ServiceAbstractFactory::class,
             ],
         ];
     }
