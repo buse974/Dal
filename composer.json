@@ -1,28 +1,29 @@
 {
-  "name": "buse974/dal",
-  "description": "Data Access Layer for ZF3",
-  "type": "module",
-  "homepage": "https://github.com/buse974/Dal",
-  "license": "MIT",
-  "authors": [
-    {
-      "name": "Christophe Robert",
-      "email": "christophe.robert@ti1.fr"
-    }
-  ],
-  "require": {
-    "php": ">=5.5",
-    "zendframework/zend-expressive" : "^2.0.0"
-  },
-  "require-dev" : {
-    "satooshi/php-coveralls": "dev-master",
-    "friendsofphp/php-cs-fixer" : "*",
-    "phpunit/phpunit" : ">=4"
-  },
-  "autoload": {
-        "psr-4": { "Dal\\": "src/" }
-  },
-  "config": {
-       "bin-dir": "bin/"
-  }
+	"name" : "buse974/dal",
+	"description" : "Data Access Layer for ZF3",
+	"type" : "module",
+	"homepage" : "https://github.com/buse974/Dal",
+	"license" : "MIT",
+	"authors" : [{
+			"name" : "Christophe Robert",
+			"email" : "christophe.robert@ti1.fr"
+		}
+	],
+	"require" : {
+		"php" : ">=5.5",
+		"zendframework/zend-expressive" : "^2.0.0"
+	},
+	"require-dev" : {
+		"satooshi/php-coveralls" : "dev-master",
+		"friendsofphp/php-cs-fixer" : "*",
+		"phpunit/phpunit" : ">=4"
+	},
+	"autoload" : {
+		"psr-4" : {
+			"Dal\\" : "src/"
+		}
+	},
+	"config" : {
+		"bin-dir" : "bin/"
+	}
 }

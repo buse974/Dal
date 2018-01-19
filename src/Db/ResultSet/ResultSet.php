@@ -14,6 +14,7 @@ namespace Dal\Db\ResultSet;
 use JsonSerializable;
 use Zend\Db\ResultSet\ResultSet as BaseResultSet;
 use Dal\Model\AbstractModel;
+use Zend\Stdlib\ArrayObject;
 
 class ResultSet extends BaseResultSet implements JsonSerializable
 {

@@ -18,11 +18,11 @@ abstract class AbstractFactory implements AbstractFactoryInterface
     public function getConfig(ContainerInterface $container)
     {
         if (null === $this->config) {
-            if (! $container->has('Config')) {
+            if (! $container->has('config')) {
                 return false;
             }
             
-            $this->config = $container->get('Config')[$this->config_name];
+            $this->config = $container->get('config')[$this->config_name];
         }
         
         return $this->config;
