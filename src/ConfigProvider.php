@@ -2,10 +2,6 @@
 
 namespace Dal;
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
-use JRpc\Json\Server\Server;
-use Zend\Diactoros\Response\JsonResponse;
-
 /**
  * The configuration provider for the App module
  *

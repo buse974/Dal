@@ -11,7 +11,8 @@
 	],
 	"require" : {
 		"php" : ">=5.5",
-		"zendframework/zend-expressive" : "^2.0.0"
+		"zendframework/zend-expressive" : "^2.0.0",
+		"zendframework/zend-db" : "*"
 	},
 	"require-dev" : {
 		"satooshi/php-coveralls" : "dev-master",
