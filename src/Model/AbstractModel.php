@@ -4,7 +4,6 @@ namespace Dal\Model;
 use JsonSerializable;
 use Dal\Stdlib\Hydrator\ClassMethods;
 use Zend\Db\Sql\Predicate\IsNull;
-use Interop\Container\ContainerInterface;
 
 abstract class AbstractModel implements JsonSerializable
 {

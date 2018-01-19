@@ -162,7 +162,7 @@ class Paginator
     /**
      * Setter Order for column
      *
-     * @param unknown $o
+     * @param int $o
      * @return \Dal\Paginator\Paginator
      */
     public function setO($o)
@@ -175,7 +175,7 @@ class Paginator
     /**
      * Constructor Pagination
      *
-     * @param array|Dal\Db\Sql\Select $select
+     * @param array| Dal\Db\Sql\Select $select
      * @param Adapter|Sql $adapterOrSqlObject
      * @param ResultSetInterface $resultSetPrototype
      * @throws \Exception

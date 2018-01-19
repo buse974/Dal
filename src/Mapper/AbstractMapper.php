@@ -206,7 +206,7 @@ abstract class AbstractMapper
      * Get row.
      *
      * @param string    $column
-     * @param multitype $value
+     * @param mixed $value
      *
      * @return \Dal\Model\AbstractModel
      */

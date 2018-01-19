@@ -1,6 +1,8 @@
 <?php
 namespace Dal\Stdlib\Hydrator;
 
+use Zend\Stdlib\Exception;
+
 class ClassMethods
 {
 

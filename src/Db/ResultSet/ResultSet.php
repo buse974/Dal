@@ -15,6 +15,7 @@ use JsonSerializable;
 use Zend\Db\ResultSet\ResultSet as BaseResultSet;
 use Dal\Model\AbstractModel;
 use Zend\Stdlib\ArrayObject;
+use Zend\Db\Sql\Exception;
 
 class ResultSet extends BaseResultSet implements JsonSerializable
 {

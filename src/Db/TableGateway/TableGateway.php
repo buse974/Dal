@@ -16,6 +16,7 @@ use Zend\Db\Adapter\Adapter as ADT;
 use Zend\Db\Metadata\Metadata;
 use Dal\Db\ResultSet\ResultSet;
 use Dal\Db\Sql\Select;
+use Zend\Db\ResultSet\ResultSetInterface;
 
 class TableGateway extends BaseTableGateway
 {
@@ -24,7 +25,7 @@ class TableGateway extends BaseTableGateway
     /**
      * Select.
      *
-     * @param Where|\Closure|string|array $where
+     * @param \Closure|string|array $where
      *
      * @return ResultSet
      */
@@ -98,7 +99,7 @@ class TableGateway extends BaseTableGateway
     /**
      * @param Select $select
      *
-     * @return \Zend\Db\TableGateway\ResultSetInterface
+     * @return ResultSetInterface
      */
     public function selectBridge(Select $select)
     {
