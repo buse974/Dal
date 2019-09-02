@@ -280,7 +280,7 @@ abstract class AbstractModel implements JsonSerializable
                 $class->setParentModel($this);
                 $class->exchangeArray($data);
                 if (! $class->Keep()) {
-                    return new IsNull();
+                    return null;
                 }
                 break;
             }
